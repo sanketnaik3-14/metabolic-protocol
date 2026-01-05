@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanket's Protocol | v7</title>
+    <title>Sanket's Protocol | v10</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -140,6 +140,12 @@
         <button onclick="nav('meds')" id="d-nav-meds" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
             <span class="material-symbols-rounded text-2xl">medication</span> Meds & Schedule
         </button>
+        <button onclick="nav('progress')" id="d-nav-progress" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">monitoring</span> Progress & Logic
+        </button>
+        <button onclick="nav('sos')" id="d-nav-sos" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">emergency</span> SOS / Guide
+        </button>
         <button onclick="nav('shopping')" id="d-nav-shopping" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
             <span class="material-symbols-rounded text-2xl">shopping_cart</span> Shopping List
         </button>
@@ -223,15 +229,14 @@
 
                 <!-- Filters -->
                 <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" id="recipe-filters">
-                    <button onclick="filterRecipes('all')" class="filter-chip active px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">
-                        <span class="hidden material-symbols-rounded text-sm mr-1">check</span> All
-                    </button>
+                    <button onclick="filterRecipes('all')" class="filter-chip active px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap"><span class="hidden material-symbols-rounded text-sm mr-1">check</span> All</button>
                     <button onclick="filterRecipes('breakfast')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Breakfast</button>
                     <button onclick="filterRecipes('lunch')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Lunch</button>
                     <button onclick="filterRecipes('dinner')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Dinner</button>
                     <button onclick="filterRecipes('snack')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Snacks</button>
                     <button onclick="filterRecipes('gut-health')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Gut Health</button>
                     <button onclick="filterRecipes('travel')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Travel Safe</button>
+                    <button onclick="filterRecipes('no-mess')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">No Mess</button>
                 </div>
 
                 <!-- Recipe Grid (Dynamic) -->
@@ -288,6 +293,90 @@
                 </div>
             </section>
 
+            <!-- ================= VIEW: PROGRESS ================= -->
+            <section id="view-progress" class="space-y-6 hidden animate-enter">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-[#191c1e]">Feedback Loop</h2>
+                    <button onclick="exportData()" class="text-xs bg-[#e1e3e5] px-3 py-1 rounded-full font-bold text-[#43474e]">Export Data</button>
+                </div>
+
+                <!-- Input -->
+                <div class="m3-card p-6">
+                    <h3 class="font-bold text-lg mb-4">Log Biometrics</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Weight (kg)</label>
+                            <input type="number" id="input-weight" step="0.1" class="w-full mt-1 p-3 border rounded-xl" placeholder="94.0">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Waist (in)</label>
+                            <input type="number" id="input-waist" step="0.5" class="w-full mt-1 p-3 border rounded-xl" placeholder="46.0">
+                        </div>
+                        <div class="col-span-2">
+                            <button onclick="saveProgress()" class="w-full py-3 bg-[#006492] text-white rounded-xl font-bold shadow-md">Save Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="m3-card p-6">
+                    <h3 class="font-bold text-lg mb-2">Trend</h3>
+                    <div class="h-64"><canvas id="progressChart"></canvas></div>
+                </div>
+
+                <!-- Logic Engine -->
+                <div class="m3-card p-6 bg-blue-50 border border-blue-100">
+                    <h3 class="font-bold text-[#006492] flex items-center gap-2"><span class="material-symbols-rounded">psychology</span> The Logic Engine</h3>
+                    <div class="mt-4 space-y-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <h4 class="font-bold text-sm text-gray-800">1. When to Recalibrate?</h4>
+                            <p class="text-sm text-gray-600 mt-1">Recalculate calories when you reach <span class="font-bold text-[#006492]">89.5 kg</span> (-5kg loss).</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <h4 class="font-bold text-sm text-gray-800">2. Plateau Detection</h4>
+                            <p class="text-sm text-gray-600 mt-1">If weight stalls for <span class="font-bold text-red-600">14 Days</span>, increase step count by 2,000.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: SOS / EMERGENCY ================= -->
+            <section id="view-sos" class="space-y-6 hidden animate-enter">
+                <h2 class="text-2xl font-bold text-red-700 flex items-center gap-2"><span class="material-symbols-rounded">warning</span> Emergency Rulebook</h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="m3-card p-5 border-l-4 border-red-500">
+                        <h3 class="font-bold text-lg text-[#191c1e]">Restaurant / Dining Out</h3>
+                        <ul class="mt-3 space-y-2 text-sm text-[#43474e] list-disc list-inside">
+                            <li><strong>Rule 1:</strong> Stick to "Tandoori" or "Grilled". No Gravy.</li>
+                            <li><strong>Rule 2:</strong> Skip the Naan/Roti. Order Rice or Salad.</li>
+                            <li><strong>Rule 3:</strong> Drink 2 glasses of water before the meal.</li>
+                            <li><strong>Best Order:</strong> Chicken Tikka + Dal Tadka (No Butter) + 1 Roti.</li>
+                        </ul>
+                    </div>
+
+                    <div class="m3-card p-5 border-l-4 border-orange-500">
+                        <h3 class="font-bold text-lg text-[#191c1e]">Traveling</h3>
+                        <ul class="mt-3 space-y-2 text-sm text-[#43474e] list-disc list-inside">
+                            <li><strong>Breakfast:</strong> Omelette (3 eggs) or Idli (No Chutney).</li>
+                            <li><strong>Snacks:</strong> Buy Roasted Chana or Peanuts. Avoid chips.</li>
+                            <li><strong>Dinner:</strong> Grilled Sandwich or Fruit Bowl.</li>
+                            <li><strong>Workout:</strong> Do 50 Pushups + 50 Squats in the hotel room.</li>
+                        </ul>
+                    </div>
+
+                    <div class="m3-card p-5 border-l-4 border-blue-500">
+                        <h3 class="font-bold text-lg text-[#191c1e]">Sick / Low Energy</h3>
+                        <ul class="mt-3 space-y-2 text-sm text-[#43474e] list-disc list-inside">
+                            <li><strong>Skip Gym.</strong> Sleep is more important for Thyroid.</li>
+                            <li><strong>Diet:</strong> Switch to Khichdi/Soup only.</li>
+                            <li><strong>Hydration:</strong> Double your water intake.</li>
+                            <li><strong>Return:</strong> Start with 50% weights when you go back.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
             <!-- ================= VIEW: SHOPPING ================= -->
             <section id="view-shopping" class="space-y-6 hidden animate-enter">
                 <h2 class="text-2xl font-bold text-[#191c1e]">Shopping List</h2>
@@ -302,15 +391,17 @@
                     </div>
                 </div>
             </section>
+
         </div>
     </main>
 
     <!-- MOBILE BOTTOM NAV -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-[#f0f4f8] border-t border-[#c3c7cf] py-2 px-6 flex justify-between items-center z-50">
-        <button onclick="nav('dashboard')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-dashboard"><span class="material-symbols-rounded text-2xl">dashboard</span><span class="text-[10px] font-medium mt-1">Today</span></button>
-        <button onclick="nav('nutrition')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-nutrition"><span class="material-symbols-rounded text-2xl">restaurant</span><span class="text-[10px] font-medium mt-1">Food</span></button>
-        <button onclick="nav('workout')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-workout"><span class="material-symbols-rounded text-2xl">fitness_center</span><span class="text-[10px] font-medium mt-1">Gym</span></button>
-        <button onclick="nav('meds')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-meds"><span class="material-symbols-rounded text-2xl">medication</span><span class="text-[10px] font-medium mt-1">Meds</span></button>
+    <nav class="md:hidden fixed bottom-0 w-full bg-[#f0f4f8] border-t border-[#c3c7cf] py-2 px-6 flex justify-between items-center z-50 overflow-x-auto">
+        <button onclick="nav('dashboard')" class="flex flex-col items-center text-[#43474e] mob-nav min-w-[50px]" id="m-nav-dashboard"><span class="material-symbols-rounded text-2xl">dashboard</span><span class="text-[10px] font-medium mt-1">Today</span></button>
+        <button onclick="nav('nutrition')" class="flex flex-col items-center text-[#43474e] mob-nav min-w-[50px]" id="m-nav-nutrition"><span class="material-symbols-rounded text-2xl">restaurant</span><span class="text-[10px] font-medium mt-1">Food</span></button>
+        <button onclick="nav('workout')" class="flex flex-col items-center text-[#43474e] mob-nav min-w-[50px]" id="m-nav-workout"><span class="material-symbols-rounded text-2xl">fitness_center</span><span class="text-[10px] font-medium mt-1">Gym</span></button>
+        <button onclick="nav('meds')" class="flex flex-col items-center text-[#43474e] mob-nav min-w-[50px]" id="m-nav-meds"><span class="material-symbols-rounded text-2xl">medication</span><span class="text-[10px] font-medium mt-1">Meds</span></button>
+        <button onclick="nav('sos')" class="flex flex-col items-center text-[#43474e] mob-nav min-w-[50px]" id="m-nav-sos"><span class="material-symbols-rounded text-2xl">emergency</span><span class="text-[10px] font-medium mt-1">SOS</span></button>
     </nav>
 
     <!-- RECIPE MODAL -->
@@ -350,7 +441,7 @@
             {
                 id: 'meatballs',
                 title: 'Chicken & Oat Meatballs',
-                tags: ['lunch', 'on-the-go', 'no-mess'],
+                tags: ['lunch', 'on-the-go', 'no-mess', 'travel'],
                 kcal: 550,
                 desc: '5 Balls + Curd',
                 code: 'Slim Fry (Code 8-10)',
@@ -374,7 +465,7 @@
             {
                 id: 'pulao',
                 title: 'Brown Rice Pulao',
-                tags: ['dinner', 'comfort'],
+                tags: ['dinner', 'comfort', 'no-mess'],
                 kcal: 520,
                 desc: 'Chicken + Rice One-Pot',
                 code: 'Indian Recipe (Code 9-6)',
@@ -465,6 +556,7 @@
             determineContext();
             renderHeatmap();
             filterRecipes('all');
+            initChart();
         }
 
         function nav(viewId) {
@@ -584,8 +676,11 @@
         }
 
         function renderShopping() {
-            document.getElementById('shop-monthly').innerHTML = shopping.monthly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
-            document.getElementById('shop-weekly').innerHTML = shopping.weekly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+            // Null check
+            const m = document.getElementById('shop-monthly');
+            const w = document.getElementById('shop-weekly');
+            if (m) m.innerHTML = shopping.monthly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+            if (w) w.innerHTML = shopping.weekly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
         }
 
         function renderHeatmap() {
@@ -618,12 +713,67 @@
             }
         }
 
+        // --- PROGRESS CHART ---
+        let chartInstance = null;
+        function initChart() {
+            const ctx = document.getElementById('progressChart');
+            if(!ctx) return;
+            const data = JSON.parse(localStorage.getItem('progress_logs')) || [];
+            data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.date),
+                    datasets: [
+                        { label: 'Weight', data: data.map(d => d.weight), borderColor: '#006492', yAxisID: 'y', tension: 0.3 },
+                        { label: 'Waist', data: data.map(d => d.waist), borderColor: '#f97316', yAxisID: 'y1', tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { position: 'left', title: {display: true, text: 'kg'} },
+                        y1: { position: 'right', grid: {drawOnChartArea: false}, title: {display: true, text: 'inches'} }
+                    }
+                }
+            });
+        }
+
+        function saveProgress() {
+            const w = parseFloat(document.getElementById('input-weight').value);
+            const ws = parseFloat(document.getElementById('input-waist').value);
+            if (!w || !ws) return alert("Enter values");
+            const logs = JSON.parse(localStorage.getItem('progress_logs')) || [];
+            const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+            logs.push({ date, weight: w, waist: ws });
+            localStorage.setItem('progress_logs', JSON.stringify(logs));
+            
+            document.getElementById('input-weight').value = '';
+            document.getElementById('input-waist').value = '';
+            if(chartInstance) chartInstance.destroy();
+            initChart();
+            alert("Log saved!");
+        }
+
+        // --- EXPORT DATA ---
+        function exportData() {
+            const logs = localStorage.getItem('progress_logs');
+            const blob = new Blob([logs], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sanket_progress_backup.json';
+            a.click();
+        }
+
         function renderDate() {
             const d = new Date();
             document.getElementById('mobile-date').innerText = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
         }
 
-        init();
+        // Wait for DOM
+        document.addEventListener('DOMContentLoaded', init);
 
     </script>
 </body>
