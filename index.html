@@ -1,1156 +1,630 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Sanket's Protocol | v4</title>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanket's Protocol | v7</title>
+    
     <!-- Fonts & Icons -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded"
-      rel="stylesheet"
-    />
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-      :root {
-        /* Material 3 Token Palette - Clinical Blue Theme */
-        --md-sys-color-primary: #006492;
-        --md-sys-color-on-primary: #ffffff;
-        --md-sys-color-primary-container: #cae6ff;
-        --md-sys-color-on-primary-container: #001e30;
+        :root {
+            /* Material 3 Token Palette - Clinical Blue Theme */
+            --md-sys-color-primary: #006492;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #cae6ff;
+            --md-sys-color-on-primary-container: #001e30;
+            
+            --md-sys-color-secondary: #50606e;
+            --md-sys-color-secondary-container: #d3e5f5;
+            --md-sys-color-on-secondary-container: #0c1d29;
+            
+            --md-sys-color-tertiary: #65587b;
+            --md-sys-color-tertiary-container: #ecdcff;
+            --md-sys-color-on-tertiary-container: #211634;
+            
+            --md-sys-color-surface: #f8fdff;
+            --md-sys-color-surface-container: #f0f4f8;
+            --md-sys-color-on-surface: #191c1e;
+            --md-sys-color-outline: #72787e;
 
-        --md-sys-color-secondary: #50606e;
-        --md-sys-color-secondary-container: #d3e5f5;
-        --md-sys-color-on-secondary-container: #0c1d29;
-
-        --md-sys-color-tertiary: #65587b;
-        --md-sys-color-tertiary-container: #ecdcff;
-        --md-sys-color-on-tertiary-container: #211634;
-
-        --md-sys-color-surface: #f8fdff;
-        --md-sys-color-surface-container: #f0f4f8;
-        --md-sys-color-on-surface: #191c1e;
-        --md-sys-color-outline: #72787e;
-
-        --status-green-bg: #dcfce7;
-        --status-green-text: #166534;
-      }
-
-      body {
-        font-family: "Roboto", sans-serif;
-        background-color: var(--md-sys-color-surface);
-        color: var(--md-sys-color-on-surface);
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      /* --- Components --- */
-
-      /* M3 Cards */
-      .m3-card {
-        background: #fff;
-        border-radius: 16px;
-        /* Elevation 1 */
-        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12),
-          0px 1px 2px 0px rgba(0, 0, 0, 0.24);
-        transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-      }
-      .m3-card.interactive:active {
-        transform: scale(0.98);
-        box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
-      }
-
-      /* Navigation Bar */
-      .nav-bar {
-        background: var(--md-sys-color-surface-container);
-      }
-      .nav-item.active {
-        background-color: var(--md-sys-color-primary-container);
-        color: var(--md-sys-color-on-primary-container);
-      }
-      .nav-item.active span {
-        font-variation-settings: "FILL" 1;
-      }
-
-      /* Modal / Dialog */
-      .modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.32);
-        backdrop-filter: blur(2px);
-      }
-      .modal-content {
-        background: var(--md-sys-color-surface);
-        border-radius: 28px;
-      }
-
-      /* Buttons */
-      .btn-primary {
-        background-color: var(--md-sys-color-primary);
-        color: var(--md-sys-color-on-primary);
-        border-radius: 100px; /* Pill shape */
-        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      }
-      .btn-tonal {
-        background-color: var(--md-sys-color-secondary-container);
-        color: var(--md-sys-color-on-secondary-container);
-        border-radius: 12px;
-      }
-
-      /* Utilities */
-      .animate-enter {
-        animation: slideUp 0.3s cubic-bezier(0, 0, 0.2, 1);
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
+            --status-green-bg: #dcfce7;
+            --status-green-text: #166534;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
 
-      /* Heatmap */
-      .heatmap-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
-      }
-      .heatmap-dot {
-        aspect-ratio: 1;
-        border-radius: 4px;
-        background-color: #e2e8f0;
-      }
-      .heatmap-dot.success {
-        background-color: #22c55e;
-      }
-      .heatmap-dot.rest {
-        background-color: #f97316;
-      }
-      .heatmap-dot.missed {
-        background-color: #ef4444;
-      }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Green Light Mode */
+        body.day-complete {
+            background-color: #f0fdf4;
+        }
+
+        /* M3 Cards */
+        .m3-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px 0px rgba(0, 0, 0, 0.24);
+            transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+        }
+        .m3-card.interactive:active {
+            transform: scale(0.98);
+            box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        }
+
+        /* Navigation Bar */
+        .nav-item.active {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .nav-item.active span {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        /* Filter Chips */
+        .filter-chip {
+            border: 1px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-secondary);
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .filter-chip.active {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-color: transparent;
+            font-weight: 600;
+        }
+        .filter-chip.active span {
+            display: inline-block;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: var(--md-sys-color-surface);
+            border-radius: 28px;
+        }
+
+        /* Heatmap */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .heatmap-dot {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+        }
+        .heatmap-dot.success { background-color: #22c55e; }
+        .heatmap-dot.rest { background-color: #f97316; }
+        .heatmap-dot.missed { background-color: #ef4444; }
+
     </style>
-  </head>
-  <body class="h-screen flex flex-col md:flex-row overflow-hidden">
-    <!-- DESKTOP SIDEBAR -->
-    <nav
-      class="hidden md:flex w-80 flex-col bg-[#f0f4f8] h-full p-4 space-y-2 border-r border-[#dde3ea]"
-    >
-      <div class="p-4 mb-4">
-        <h1 class="text-2xl font-bold text-[#001e30]">Sanket's Protocol</h1>
-        <p class="text-sm text-[#43474e]">Metabolic Repair Phase</p>
-      </div>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden">
 
-      <button
-        onclick="nav('dashboard')"
-        id="d-nav-dashboard"
-        class="nav-item active flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]"
-      >
-        <span class="material-symbols-rounded text-2xl">dashboard</span>
-        Dashboard
-      </button>
-      <button
-        onclick="nav('nutrition')"
-        id="d-nav-nutrition"
-        class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]"
-      >
-        <span class="material-symbols-rounded text-2xl">restaurant</span>
-        Nutrition & Recipes
-      </button>
-      <button
-        onclick="nav('workout')"
-        id="d-nav-workout"
-        class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]"
-      >
-        <span class="material-symbols-rounded text-2xl">fitness_center</span>
-        Workout Plan
-      </button>
-      <button
-        onclick="nav('meds')"
-        id="d-nav-meds"
-        class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]"
-      >
-        <span class="material-symbols-rounded text-2xl">medication</span> Meds &
-        Schedule
-      </button>
-      <button
-        onclick="nav('shopping')"
-        id="d-nav-shopping"
-        class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]"
-      >
-        <span class="material-symbols-rounded text-2xl">shopping_cart</span>
-        Shopping List
-      </button>
+    <!-- DESKTOP SIDEBAR -->
+    <nav class="hidden md:flex w-80 flex-col bg-[#f0f4f8] h-full p-4 space-y-2 border-r border-[#dde3ea]">
+        <div class="p-4 mb-4">
+            <h1 class="text-2xl font-bold text-[#001e30]">Sanket's Protocol</h1>
+            <p class="text-sm text-[#43474e]">Metabolic Repair Phase</p>
+        </div>
+        
+        <button onclick="nav('dashboard')" id="d-nav-dashboard" class="nav-item active flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">dashboard</span> Dashboard
+        </button>
+        <button onclick="nav('nutrition')" id="d-nav-nutrition" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">restaurant</span> Nutrition & Recipes
+        </button>
+        <button onclick="nav('workout')" id="d-nav-workout" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">fitness_center</span> Workout Plan
+        </button>
+        <button onclick="nav('meds')" id="d-nav-meds" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">medication</span> Meds & Schedule
+        </button>
+        <button onclick="nav('shopping')" id="d-nav-shopping" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
+            <span class="material-symbols-rounded text-2xl">shopping_cart</span> Shopping List
+        </button>
     </nav>
 
     <!-- MOBILE MAIN CONTENT -->
-    <main
-      class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-[#f8fdff] pb-24 md:pb-0"
-    >
-      <!-- Header Mobile -->
-      <header
-        class="md:hidden sticky top-0 bg-[#f8fdff]/90 backdrop-blur-sm z-20 px-4 py-4 flex justify-between items-center border-b border-[#e1e3e5]"
-      >
-        <div>
-          <h1 class="text-lg font-bold text-[#191c1e]">Sanket's Protocol</h1>
-          <p class="text-xs text-[#43474e]" id="mobile-date">Loading...</p>
+    <main class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-[#f8fdff] pb-24 md:pb-0 transition-colors duration-500">
+        
+        <!-- Header Mobile -->
+        <header class="md:hidden sticky top-0 bg-[#f8fdff]/90 backdrop-blur-sm z-20 px-4 py-4 flex justify-between items-center border-b border-[#e1e3e5]">
+            <div>
+                <h1 class="text-lg font-bold text-[#191c1e]">Sanket's Protocol</h1>
+                <p class="text-xs text-[#43474e]" id="mobile-date">Loading...</p>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-[#c2e8ff] flex items-center justify-center text-[#001e30] font-bold text-xs">
+                S
+            </div>
+        </header>
+
+        <div class="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
+
+            <!-- ================= VIEW: DASHBOARD ================= -->
+            <section id="view-dashboard" class="space-y-6 animate-enter">
+                
+                <!-- Status Card -->
+                <div id="status-card" class="m3-card p-6 bg-[#006492] text-white relative overflow-hidden transition-colors duration-500">
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 class="text-3xl font-bold" id="dash-focus">Loading...</h2>
+                                <p class="opacity-90 text-sm mt-1" id="dash-sub">Loading...</p>
+                            </div>
+                            <span class="material-symbols-rounded text-4xl opacity-20 bg-white/10 p-2 rounded-full" id="dash-icon">event</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/10">
+                                1,550 kcal
+                            </div>
+                            <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/10">
+                                150g Protein
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Mission Checklist -->
+                <div class="m3-card p-5">
+                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-[#191c1e]">
+                        <span class="material-symbols-rounded text-[#006492]">check_circle</span> Daily Mission
+                    </h3>
+                    <div class="space-y-1" id="checklist-container">
+                        <!-- Injected via JS -->
+                    </div>
+                    <button onclick="finishDay()" id="btn-finish" class="mt-4 w-full py-3 rounded-full font-bold bg-[#e1e3e5] text-[#43474e] transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
+                        Complete Day
+                    </button>
+                </div>
+
+                <!-- Progress Snapshot -->
+                <div class="m3-card p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-[#191c1e]">Consistency</h3>
+                        <span class="text-xs font-bold text-[#006492] bg-[#cae6ff] px-2 py-1 rounded-md" id="streak-badge">0 Day Streak</span>
+                    </div>
+                    <div class="heatmap-grid" id="mini-heatmap"></div>
+                    <div class="mt-4 pt-4 border-t border-[#e1e3e5] flex gap-4 text-xs text-[#43474e]">
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-[#22c55e]"></span> Done</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-[#f97316]"></span> Rest</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-[#ef4444]"></span> Miss</div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= VIEW: NUTRITION ================= -->
+            <section id="view-nutrition" class="space-y-6 hidden animate-enter">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-[#191c1e]">Meal Plan</h2>
+                    <span class="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold">Batch Cook: Sun & Wed</span>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" id="recipe-filters">
+                    <button onclick="filterRecipes('all')" class="filter-chip active px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">
+                        <span class="hidden material-symbols-rounded text-sm mr-1">check</span> All
+                    </button>
+                    <button onclick="filterRecipes('breakfast')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Breakfast</button>
+                    <button onclick="filterRecipes('lunch')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Lunch</button>
+                    <button onclick="filterRecipes('dinner')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Dinner</button>
+                    <button onclick="filterRecipes('snack')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Snacks</button>
+                    <button onclick="filterRecipes('gut-health')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Gut Health</button>
+                    <button onclick="filterRecipes('travel')" class="filter-chip px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">Travel Safe</button>
+                </div>
+
+                <!-- Recipe Grid (Dynamic) -->
+                <div id="recipe-grid" class="grid md:grid-cols-2 gap-4">
+                    <!-- Cards injected via JS -->
+                </div>
+            </section>
+
+            <!-- ================= VIEW: WORKOUT ================= -->
+            <section id="view-workout" class="space-y-6 hidden animate-enter">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-[#191c1e]">6-Day PPL</h2>
+                    <span class="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">Incline Walk Mandatory</span>
+                </div>
+
+                <!-- Workout Schedule Tabs -->
+                <div class="flex p-1 bg-[#e0e2e5] rounded-xl overflow-x-auto">
+                    <button onclick="setWorkout('push')" id="btn-push" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PUSH<br><span class="font-normal opacity-70">Mon/Thu</span></button>
+                    <button onclick="setWorkout('pull')" id="btn-pull" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PULL<br><span class="font-normal opacity-70">Tue/Fri</span></button>
+                    <button onclick="setWorkout('legs')" id="btn-legs" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">LEGS<br><span class="font-normal opacity-70">Wed/Sat</span></button>
+                    <button onclick="setWorkout('rest')" id="btn-rest" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">REST<br><span class="font-normal opacity-70">Sun</span></button>
+                </div>
+
+                <div class="m3-card p-6 border-t-4 border-[#006492]">
+                    <div id="workout-display"></div>
+                </div>
+            </section>
+
+             <!-- ================= VIEW: MEDS ================= -->
+             <section id="view-meds" class="space-y-6 hidden animate-enter">
+                <h2 class="text-2xl font-bold text-[#191c1e]">Medication Schedule</h2>
+
+                <div class="space-y-3">
+                    <div class="m3-card p-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-xs">07:00</div>
+                        <div><h4 class="font-bold text-[#191c1e]">Eltroxin (Thyroid)</h4><p class="text-sm text-[#43474e]">Empty stomach. No coffee for 45m.</p></div>
+                    </div>
+                    <div class="m3-card p-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-700 font-bold text-xs">08:30</div>
+                        <div><h4 class="font-bold text-[#191c1e]">Escitalopram + Lamotrigine</h4><p class="text-sm text-[#43474e]">Take with breakfast.</p></div>
+                    </div>
+                    <div class="m3-card p-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700 font-bold text-xs">13:30</div>
+                        <div><h4 class="font-bold text-[#191c1e]">Absorption Stack</h4><p class="text-sm text-[#43474e]">Fish Oil + B12 + Homochek + Multi.</p></div>
+                    </div>
+                    <div class="m3-card p-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-700 font-bold text-xs">20:30</div>
+                        <div><h4 class="font-bold text-[#191c1e]">Lipid Control</h4><p class="text-sm text-[#43474e]">Rosave F (Statin) + Febustat.</p></div>
+                    </div>
+                    <div class="m3-card p-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-bold text-xs">22:00</div>
+                        <div><h4 class="font-bold text-[#191c1e]">Magnesium Glycinate</h4><p class="text-sm text-[#43474e]">For sleep & recovery.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: SHOPPING ================= -->
+            <section id="view-shopping" class="space-y-6 hidden animate-enter">
+                <h2 class="text-2xl font-bold text-[#191c1e]">Shopping List</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="m3-card p-5">
+                        <h3 class="font-bold text-[#006492] mb-3">Monthly</h3>
+                        <div id="shop-monthly" class="space-y-2 text-sm text-[#43474e]"></div>
+                    </div>
+                    <div class="m3-card p-5">
+                        <h3 class="font-bold text-green-700 mb-3">Weekly</h3>
+                        <div id="shop-weekly" class="space-y-2 text-sm text-[#43474e]"></div>
+                    </div>
+                </div>
+            </section>
         </div>
-        <div
-          class="w-8 h-8 rounded-full bg-[#c2e8ff] flex items-center justify-center text-[#001e30] font-bold text-xs"
-        >
-          S
-        </div>
-      </header>
-
-      <div class="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
-        <!-- ================= VIEW: DASHBOARD ================= -->
-        <section id="view-dashboard" class="space-y-6 animate-enter">
-          <!-- Status Card -->
-          <div
-            class="m3-card p-6 bg-[#006492] text-white relative overflow-hidden"
-          >
-            <div class="relative z-10">
-              <div class="flex justify-between items-start mb-6">
-                <div>
-                  <h2 class="text-3xl font-bold" id="dash-focus">Loading...</h2>
-                  <p class="opacity-90 text-sm mt-1" id="dash-sub">
-                    Loading...
-                  </p>
-                </div>
-                <span
-                  class="material-symbols-rounded text-4xl opacity-20 bg-white/10 p-2 rounded-full"
-                  >event</span
-                >
-              </div>
-              <div class="flex gap-2">
-                <div
-                  class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/10"
-                >
-                  1,550 kcal
-                </div>
-                <div
-                  class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/10"
-                >
-                  150g Protein
-                </div>
-              </div>
-            </div>
-            <div
-              class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl"
-            ></div>
-          </div>
-
-          <!-- Daily Mission Checklist (Simplified) -->
-          <div class="m3-card p-5">
-            <h3
-              class="font-bold text-lg mb-4 flex items-center gap-2 text-[#191c1e]"
-            >
-              <span class="material-symbols-rounded text-[#006492]"
-                >check_circle</span
-              >
-              Daily Mission
-            </h3>
-            <div class="space-y-1" id="checklist-container">
-              <!-- Injected via JS -->
-            </div>
-            <button
-              onclick="finishDay()"
-              id="btn-finish"
-              class="mt-4 w-full py-3 rounded-full font-bold bg-[#e1e3e5] text-[#43474e] transition-colors"
-            >
-              Complete Day
-            </button>
-          </div>
-
-          <!-- Progress Snapshot -->
-          <div class="m3-card p-5">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="font-bold text-lg text-[#191c1e]">Consistency</h3>
-              <span
-                class="text-xs font-bold text-[#006492] bg-[#cae6ff] px-2 py-1 rounded-md"
-                id="streak-badge"
-                >0 Day Streak</span
-              >
-            </div>
-            <div class="heatmap-grid" id="mini-heatmap"></div>
-            <div
-              class="mt-4 pt-4 border-t border-[#e1e3e5] flex gap-4 text-xs text-[#43474e]"
-            >
-              <div class="flex items-center gap-1">
-                <span class="w-3 h-3 rounded bg-[#22c55e]"></span> Done
-              </div>
-              <div class="flex items-center gap-1">
-                <span class="w-3 h-3 rounded bg-[#f97316]"></span> Rest
-              </div>
-              <div class="flex items-center gap-1">
-                <span class="w-3 h-3 rounded bg-[#ef4444]"></span> Miss
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ================= VIEW: NUTRITION ================= -->
-        <section id="view-nutrition" class="space-y-6 hidden animate-enter">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-[#191c1e]">Meal Plan</h2>
-            <span
-              class="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold"
-              >Batch Cook: Sun & Wed</span
-            >
-          </div>
-
-          <!-- Snacks Card (Requested Feature) -->
-          <div class="m3-card p-4 border-l-4 border-[#65587b] bg-[#fdfcff]">
-            <h3 class="font-bold text-[#65587b] flex items-center gap-2">
-              <span class="material-symbols-rounded">coffee</span> Snacks &
-              Hydration
-            </h3>
-            <div class="mt-3 grid grid-cols-2 gap-3">
-              <div class="bg-white p-3 rounded-xl border border-[#e7e0ec]">
-                <p class="text-xs font-bold text-[#49454f]">
-                  Morning (Pre-Gym)
-                </p>
-                <p class="text-sm font-medium text-[#1d1b20]">Black Coffee</p>
-                <p class="text-[10px] text-[#49454f]">
-                  No Sugar. 45m after Eltroxin.
-                </p>
-              </div>
-              <div class="bg-white p-3 rounded-xl border border-[#e7e0ec]">
-                <p class="text-xs font-bold text-[#49454f]">Post-Workout</p>
-                <p class="text-sm font-medium text-[#1d1b20]">1 Scoop Whey</p>
-                <p class="text-[10px] text-[#49454f]">With Water. Immediate.</p>
-              </div>
-              <div class="bg-white p-3 rounded-xl border border-[#e7e0ec]">
-                <p class="text-xs font-bold text-[#49454f]">Lunch Add-on</p>
-                <p class="text-sm font-medium text-[#1d1b20]">
-                  150g Curd (Dahi)
-                </p>
-                <p class="text-[10px] text-[#49454f]">Homemade. Probiotic.</p>
-              </div>
-              <div class="bg-white p-3 rounded-xl border border-[#e7e0ec]">
-                <p class="text-xs font-bold text-[#49454f]">Hydration</p>
-                <p class="text-sm font-medium text-[#1d1b20]">3.5 Liters</p>
-                <p class="text-[10px] text-[#49454f]">1L by 11 AM.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recipe Cards -->
-          <div class="grid md:grid-cols-2 gap-4">
-            <!-- Breakfast -->
-            <div
-              onclick="openRecipe('muffins')"
-              class="m3-card p-0 interactive cursor-pointer overflow-hidden group"
-            >
-              <div
-                class="h-24 bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors"
-              >
-                <span class="material-symbols-rounded text-4xl text-blue-800"
-                  >egg_alt</span
-                >
-              </div>
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-1">
-                  <span
-                    class="text-[10px] font-bold uppercase tracking-wider text-blue-800"
-                    >Breakfast</span
-                  >
-                  <span class="text-xs font-mono text-gray-500">370 kcal</span>
-                </div>
-                <h3 class="font-bold text-lg text-[#191c1e]">Egg Muffins</h3>
-                <p class="text-sm text-[#43474e]">4 Muffins + 1 Toast</p>
-                <div
-                  class="mt-3 flex items-center gap-1 text-xs text-blue-700 font-medium"
-                >
-                  <span class="material-symbols-rounded text-sm"
-                    >visibility</span
-                  >
-                  View Recipe
-                </div>
-              </div>
-            </div>
-
-            <!-- Lunch -->
-            <div
-              onclick="openRecipe('meatballs')"
-              class="m3-card p-0 interactive cursor-pointer overflow-hidden group"
-            >
-              <div
-                class="h-24 bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors"
-              >
-                <span class="material-symbols-rounded text-4xl text-green-800"
-                  >lunch_dining</span
-                >
-              </div>
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-1">
-                  <span
-                    class="text-[10px] font-bold uppercase tracking-wider text-green-800"
-                    >Lunch</span
-                  >
-                  <span class="text-xs font-mono text-gray-500">550 kcal</span>
-                </div>
-                <h3 class="font-bold text-lg text-[#191c1e]">
-                  Chicken & Oat Meatballs
-                </h3>
-                <p class="text-sm text-[#43474e]">5 Balls + Curd</p>
-                <div
-                  class="mt-3 flex items-center gap-1 text-xs text-green-700 font-medium"
-                >
-                  <span class="material-symbols-rounded text-sm"
-                    >visibility</span
-                  >
-                  View Recipe
-                </div>
-              </div>
-            </div>
-
-            <!-- Dinner Option A -->
-            <div
-              onclick="openRecipe('sandwich')"
-              class="m3-card p-0 interactive cursor-pointer overflow-hidden group"
-            >
-              <div
-                class="h-24 bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors"
-              >
-                <span class="material-symbols-rounded text-4xl text-purple-800"
-                  >bakery_dining</span
-                >
-              </div>
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-1">
-                  <span
-                    class="text-[10px] font-bold uppercase tracking-wider text-purple-800"
-                    >Dinner A (Travel)</span
-                  >
-                  <span class="text-xs font-mono text-gray-500">520 kcal</span>
-                </div>
-                <h3 class="font-bold text-lg text-[#191c1e]">
-                  Tandoori Sandwich
-                </h3>
-                <p class="text-sm text-[#43474e]">250g Chicken + 2 Bread</p>
-                <div
-                  class="mt-3 flex items-center gap-1 text-xs text-purple-700 font-medium"
-                >
-                  <span class="material-symbols-rounded text-sm"
-                    >visibility</span
-                  >
-                  View Recipe
-                </div>
-              </div>
-            </div>
-
-            <!-- Dinner Option B -->
-            <div
-              onclick="openRecipe('pulao')"
-              class="m3-card p-0 interactive cursor-pointer overflow-hidden group"
-            >
-              <div
-                class="h-24 bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors"
-              >
-                <span class="material-symbols-rounded text-4xl text-orange-800"
-                  >rice_bowl</span
-                >
-              </div>
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-1">
-                  <span
-                    class="text-[10px] font-bold uppercase tracking-wider text-orange-800"
-                    >Dinner B (Comfort)</span
-                  >
-                  <span class="text-xs font-mono text-gray-500">520 kcal</span>
-                </div>
-                <h3 class="font-bold text-lg text-[#191c1e]">
-                  Brown Rice Pulao
-                </h3>
-                <p class="text-sm text-[#43474e]">1 Bowl (Chicken + Rice)</p>
-                <div
-                  class="mt-3 flex items-center gap-1 text-xs text-orange-700 font-medium"
-                >
-                  <span class="material-symbols-rounded text-sm"
-                    >visibility</span
-                  >
-                  View Recipe
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ================= VIEW: WORKOUT ================= -->
-        <section id="view-workout" class="space-y-6 hidden animate-enter">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-[#191c1e]">6-Day PPL</h2>
-            <span
-              class="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold"
-              >Incline Walk Mandatory</span
-            >
-          </div>
-
-          <!-- Workout Schedule Tabs (Requested Feature) -->
-          <div class="flex p-1 bg-[#e0e2e5] rounded-xl overflow-x-auto">
-            <button
-              onclick="setWorkout('push')"
-              id="btn-push"
-              class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]"
-            >
-              PUSH<br /><span class="font-normal opacity-70">Mon/Thu</span>
-            </button>
-            <button
-              onclick="setWorkout('pull')"
-              id="btn-pull"
-              class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]"
-            >
-              PULL<br /><span class="font-normal opacity-70">Tue/Fri</span>
-            </button>
-            <button
-              onclick="setWorkout('legs')"
-              id="btn-legs"
-              class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]"
-            >
-              LEGS<br /><span class="font-normal opacity-70">Wed/Sat</span>
-            </button>
-            <button
-              onclick="setWorkout('rest')"
-              id="btn-rest"
-              class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]"
-            >
-              REST<br /><span class="font-normal opacity-70">Sun</span>
-            </button>
-          </div>
-
-          <div class="m3-card p-6 border-t-4 border-[#006492]">
-            <div id="workout-display">
-              <!-- Content injected via JS -->
-            </div>
-          </div>
-        </section>
-
-        <!-- ================= VIEW: MEDS (NEW) ================= -->
-        <section id="view-meds" class="space-y-6 hidden animate-enter">
-          <h2 class="text-2xl font-bold text-[#191c1e]">Medication Schedule</h2>
-
-          <div class="space-y-3">
-            <!-- Morning -->
-            <div class="m3-card p-4 flex gap-4 items-center">
-              <div
-                class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-xs"
-              >
-                07:00
-              </div>
-              <div>
-                <h4 class="font-bold text-[#191c1e]">Eltroxin (Thyroid)</h4>
-                <p class="text-sm text-[#43474e]">
-                  Empty stomach. No coffee for 45m.
-                </p>
-              </div>
-            </div>
-
-            <!-- Breakfast -->
-            <div class="m3-card p-4 flex gap-4 items-center">
-              <div
-                class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-700 font-bold text-xs"
-              >
-                08:30
-              </div>
-              <div>
-                <h4 class="font-bold text-[#191c1e]">
-                  Escitalopram + Lamotrigine
-                </h4>
-                <p class="text-sm text-[#43474e]">
-                  Take with breakfast (Egg Muffins).
-                </p>
-              </div>
-            </div>
-
-            <!-- Lunch -->
-            <div class="m3-card p-4 flex gap-4 items-center">
-              <div
-                class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700 font-bold text-xs"
-              >
-                13:30
-              </div>
-              <div>
-                <h4 class="font-bold text-[#191c1e]">Absorption Stack</h4>
-                <p class="text-sm text-[#43474e]">
-                  Fish Oil + B12 + Homochek + Multi.
-                </p>
-              </div>
-            </div>
-
-            <!-- Dinner -->
-            <div class="m3-card p-4 flex gap-4 items-center">
-              <div
-                class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-700 font-bold text-xs"
-              >
-                20:30
-              </div>
-              <div>
-                <h4 class="font-bold text-[#191c1e]">Lipid Control</h4>
-                <p class="text-sm text-[#43474e]">
-                  Rosave F (Statin) + Febustat.
-                </p>
-              </div>
-            </div>
-
-            <!-- Bedtime -->
-            <div class="m3-card p-4 flex gap-4 items-center">
-              <div
-                class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-bold text-xs"
-              >
-                22:00
-              </div>
-              <div>
-                <h4 class="font-bold text-[#191c1e]">Magnesium Glycinate</h4>
-                <p class="text-sm text-[#43474e]">For sleep & recovery.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ================= VIEW: SHOPPING ================= -->
-        <section id="view-shopping" class="space-y-6 hidden animate-enter">
-          <h2 class="text-2xl font-bold text-[#191c1e]">Shopping List</h2>
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="m3-card p-5">
-              <h3 class="font-bold text-[#006492] mb-3">Monthly (Amazon)</h3>
-              <div
-                id="shop-monthly"
-                class="space-y-2 text-sm text-[#43474e]"
-              ></div>
-            </div>
-            <div class="m3-card p-5">
-              <h3 class="font-bold text-green-700 mb-3">Weekly (Fresh)</h3>
-              <div
-                id="shop-weekly"
-                class="space-y-2 text-sm text-[#43474e]"
-              ></div>
-            </div>
-          </div>
-        </section>
-      </div>
     </main>
 
     <!-- MOBILE BOTTOM NAV -->
-    <nav
-      class="md:hidden fixed bottom-0 w-full bg-[#f0f4f8] border-t border-[#c3c7cf] py-2 px-6 flex justify-between items-center z-50"
-    >
-      <button
-        onclick="nav('dashboard')"
-        class="flex flex-col items-center text-[#43474e] mob-nav"
-        id="m-nav-dashboard"
-      >
-        <span class="material-symbols-rounded text-2xl">dashboard</span>
-        <span class="text-[10px] font-medium mt-1">Today</span>
-      </button>
-      <button
-        onclick="nav('nutrition')"
-        class="flex flex-col items-center text-[#43474e] mob-nav"
-        id="m-nav-nutrition"
-      >
-        <span class="material-symbols-rounded text-2xl">restaurant</span>
-        <span class="text-[10px] font-medium mt-1">Food</span>
-      </button>
-      <button
-        onclick="nav('workout')"
-        class="flex flex-col items-center text-[#43474e] mob-nav"
-        id="m-nav-workout"
-      >
-        <span class="material-symbols-rounded text-2xl">fitness_center</span>
-        <span class="text-[10px] font-medium mt-1">Gym</span>
-      </button>
-      <button
-        onclick="nav('meds')"
-        class="flex flex-col items-center text-[#43474e] mob-nav"
-        id="m-nav-meds"
-      >
-        <span class="material-symbols-rounded text-2xl">medication</span>
-        <span class="text-[10px] font-medium mt-1">Meds</span>
-      </button>
+    <nav class="md:hidden fixed bottom-0 w-full bg-[#f0f4f8] border-t border-[#c3c7cf] py-2 px-6 flex justify-between items-center z-50">
+        <button onclick="nav('dashboard')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-dashboard"><span class="material-symbols-rounded text-2xl">dashboard</span><span class="text-[10px] font-medium mt-1">Today</span></button>
+        <button onclick="nav('nutrition')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-nutrition"><span class="material-symbols-rounded text-2xl">restaurant</span><span class="text-[10px] font-medium mt-1">Food</span></button>
+        <button onclick="nav('workout')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-workout"><span class="material-symbols-rounded text-2xl">fitness_center</span><span class="text-[10px] font-medium mt-1">Gym</span></button>
+        <button onclick="nav('meds')" class="flex flex-col items-center text-[#43474e] mob-nav" id="m-nav-meds"><span class="material-symbols-rounded text-2xl">medication</span><span class="text-[10px] font-medium mt-1">Meds</span></button>
     </nav>
 
     <!-- RECIPE MODAL -->
-    <dialog
-      id="recipe-modal"
-      class="modal-backdrop fixed inset-0 w-full h-full z-50 flex items-center justify-center p-4 hidden"
-    >
-      <div
-        class="modal-content w-full max-w-md max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-enter"
-      >
-        <div class="flex justify-between items-start mb-4">
-          <h3 class="text-2xl font-bold text-[#191c1e]" id="modal-title">
-            Title
-          </h3>
-          <button
-            onclick="closeModal()"
-            class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"
-          >
-            <span class="material-symbols-rounded">close</span>
-          </button>
+    <dialog id="recipe-modal" class="modal-backdrop fixed inset-0 w-full h-full z-50 flex items-center justify-center p-4 hidden">
+        <div class="modal-content w-full max-w-md max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-enter">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-2xl font-bold text-[#191c1e]" id="modal-title">Title</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><span class="material-symbols-rounded">close</span></button>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                    <p class="text-xs font-bold text-blue-800 uppercase">Samsung Oven Setting</p>
+                    <p class="text-lg font-bold text-blue-900" id="modal-code">Code X-XX</p>
+                </div>
+                <div><h4 class="font-bold text-sm text-gray-500 uppercase mb-2">Ingredients</h4><ul class="space-y-2 text-sm text-[#43474e]" id="modal-ingredients"></ul></div>
+                <div><h4 class="font-bold text-sm text-gray-500 uppercase mb-2">Instructions</h4><ol class="space-y-3 text-sm text-[#43474e] list-decimal list-inside" id="modal-steps"></ol></div>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-6 py-3 bg-[#006492] text-white rounded-full font-bold">Got it</button>
         </div>
-
-        <div class="space-y-4">
-          <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
-            <p class="text-xs font-bold text-blue-800 uppercase">
-              Samsung Oven Setting
-            </p>
-            <p class="text-lg font-bold text-blue-900" id="modal-code">
-              Code X-XX
-            </p>
-          </div>
-
-          <div>
-            <h4 class="font-bold text-sm text-gray-500 uppercase mb-2">
-              Ingredients (Batch)
-            </h4>
-            <ul
-              class="space-y-2 text-sm text-[#43474e]"
-              id="modal-ingredients"
-            ></ul>
-          </div>
-
-          <div>
-            <h4 class="font-bold text-sm text-gray-500 uppercase mb-2">
-              Instructions
-            </h4>
-            <ol
-              class="space-y-3 text-sm text-[#43474e] list-decimal list-inside"
-              id="modal-steps"
-            ></ol>
-          </div>
-        </div>
-
-        <button
-          onclick="closeModal()"
-          class="w-full mt-6 py-3 bg-[#006492] text-white rounded-full font-bold"
-        >
-          Got it
-        </button>
-      </div>
     </dialog>
 
     <script>
-      // --- DATA ---
-      const recipes = {
-        muffins: {
-          title: "Egg Muffins",
-          code: "Convection 180°C (Code 4-18 Template)",
-          ingredients: [
-            "6 Whole Eggs",
-            "10 Egg Whites",
-            "200g Spinach/Capsicum/Onion",
-            "Salt & Pepper",
-            "Silicone Muffin Tray",
-          ],
-          steps: [
-            "Whisk eggs and whites together.",
-            "Place chopped veggies in muffin tray slots.",
-            "Pour egg mix over veggies.",
-            "Bake at 180°C for 15-20 mins.",
-            "Store in fridge (Lasts 3 days).",
-          ],
-        },
-        meatballs: {
-          title: "Chicken & Oat Meatballs",
-          code: "Slim Fry (Code 8-10 / 9-18)",
-          ingredients: [
-            "1kg Chicken Mince",
-            "150g Powdered Oats",
-            "500g Grated Bottle Gourd (Squeezed dry)",
-            "Ginger-Garlic Paste",
-            "Spices: Turmeric, Garam Masala",
-          ],
-          steps: [
-            "Mix all ingredients in a bowl.",
-            "Shape into 20 medium balls.",
-            "Brush with oil.",
-            "Place on Crusty Plate (High Rack).",
-            "Run Slim Fry mode.",
-          ],
-        },
-        sandwich: {
-          title: "Tandoori Chicken Sandwich",
-          code: "Chicken Tikka (Code 8-9)",
-          ingredients: [
-            "750g Chicken Breast (Chunks)",
-            "Marinade: Curd + Ginger/Garlic + Chili Powder",
-            "Whole Wheat Bread",
-          ],
-          steps: [
-            "Marinate chicken chunks for 20 mins.",
-            "Place on Crusty Plate (High Rack).",
-            "Run Code 8-9.",
-            "Store dry in fridge.",
-            "Assemble sandwich cold or warm (No gravy/mess).",
-          ],
-        },
-        pulao: {
-          title: "Brown Rice Chicken Pulao",
-          code: "Chicken Pulao (Code 9-6)",
-          ingredients: [
-            "500g Chicken",
-            "1.5 Cups Brown Rice (Soaked 2hrs)",
-            "3 Cups Water",
-            "Whole Spices & Onion",
-          ],
-          steps: [
-            "Microwave spices, onion, chicken first (Step 1).",
-            "Add soaked rice and water (Step 2).",
-            "Cook until water absorbed.",
-            "One-pot meal, zero mess.",
-          ],
-        },
-      };
-
-      const workouts = {
-        push: {
-          title: "PUSH DAY (Mon/Thu)",
-          exercises: [
-            { name: "Machine Chest Press", sets: "3 x 12" },
-            { name: "Seated Shoulder Press", sets: "3 x 12" },
-            { name: "Tricep Pushdowns", sets: "3 x 15" },
-            { name: "Plank", sets: "3 x 45s" },
-          ],
-        },
-        pull: {
-          title: "PULL DAY (Tue/Fri)",
-          exercises: [
-            { name: "Lat Pulldown (Wide)", sets: "3 x 12" },
-            { name: "Seated Cable Row", sets: "3 x 12" },
-            { name: "Face Pulls", sets: "3 x 15" },
-            { name: "Bicep Curls", sets: "3 x 12" },
-          ],
-        },
-        legs: {
-          title: "LEG DAY (Wed/Sat)",
-          exercises: [
-            { name: "Leg Press", sets: "3 x 15" },
-            { name: "Leg Extension", sets: "3 x 15" },
-            { name: "Hamstring Curl", sets: "3 x 15" },
-            { name: "Calf Raises", sets: "3 x 20" },
-          ],
-        },
-        rest: {
-          title: "REST DAY (Sunday)",
-          exercises: [
-            { name: "Active Recovery Walk", sets: "45 mins" },
-            { name: "Batch Cooking", sets: "Meal Prep" },
-          ],
-        },
-      };
-
-      const shopping = {
-        monthly: [
-          "2kg Rolled Oats",
-          "2kg Brown Rice",
-          "1kg Whey Protein",
-          "Fish Oil (Triple Strength)",
-          "Magnesium Glycinate",
-          "Silicone Muffin Tray",
-        ],
-        weekly: [
-          "2kg Chicken Mince",
-          "1kg Chicken Breast",
-          "30 Eggs (1 Tray)",
-          "7 Liters Milk (Curd)",
-          "3 Bottle Gourds",
-          "Ginger/Garlic Paste",
-          "Whole Wheat Bread",
-        ],
-      };
-
-      // --- APP LOGIC ---
-
-      function init() {
-        renderDate();
-        renderChecklist();
-        renderShopping();
-        determineContext();
-        renderHeatmap();
-      }
-
-      // Navigation
-      function nav(viewId) {
-        // Hide all
-        document
-          .querySelectorAll("section")
-          .forEach((el) => el.classList.add("hidden"));
-        // Show target
-        document.getElementById(`view-${viewId}`).classList.remove("hidden");
-
-        // Desktop State
-        document.querySelectorAll(".nav-item").forEach((el) => {
-          el.classList.remove("active", "bg-[#cae6ff]", "text-[#001e30]");
-          el.classList.add("text-[#43474e]");
-        });
-        const dBtn = document.getElementById(`d-nav-${viewId}`);
-        if (dBtn) {
-          dBtn.classList.add("active", "bg-[#cae6ff]", "text-[#001e30]");
-          dBtn.classList.remove("text-[#43474e]");
-        }
-
-        // Mobile State
-        document
-          .querySelectorAll(".mob-nav")
-          .forEach((el) => el.classList.remove("text-[#006492]", "font-bold"));
-        const mBtn = document.getElementById(`m-nav-${viewId}`);
-        if (mBtn) mBtn.classList.add("text-[#006492]", "font-bold");
-      }
-
-      // Context Logic
-      function determineContext() {
-        const day = new Date().getDay(); // 0=Sun, 1=Mon...
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
+        // --- DATA: SCALABLE RECIPE DATABASE ---
+        const recipeDB = [
+            {
+                id: 'muffins',
+                title: 'Egg Muffins',
+                tags: ['breakfast', 'on-the-go', 'no-mess'],
+                kcal: 370,
+                desc: '4 Muffins + 1 Toast',
+                code: 'Convection 180°C (Code 4-18)',
+                ingredients: ["6 Whole Eggs", "10 Egg Whites", "200g Spinach/Capsicum/Onion", "Salt & Pepper", "Silicone Muffin Tray"],
+                steps: ["Whisk eggs and whites together.", "Place chopped veggies in muffin tray.", "Pour egg mix over veggies.", "Bake at 180°C for 15-20 mins.", "Store in fridge (Lasts 3 days)."],
+                icon: 'egg_alt',
+                color: 'blue'
+            },
+            {
+                id: 'meatballs',
+                title: 'Chicken & Oat Meatballs',
+                tags: ['lunch', 'on-the-go', 'no-mess'],
+                kcal: 550,
+                desc: '5 Balls + Curd',
+                code: 'Slim Fry (Code 8-10)',
+                ingredients: ["1kg Chicken Mince", "150g Powdered Oats", "500g Grated Bottle Gourd (Squeezed dry)", "Ginger-Garlic Paste", "Spices: Turmeric, Garam Masala"],
+                steps: ["Mix all ingredients in a bowl.", "Shape into 20 medium balls.", "Brush with oil.", "Place on Crusty Plate (High Rack).", "Run Slim Fry mode."],
+                icon: 'lunch_dining',
+                color: 'green'
+            },
+            {
+                id: 'khichdi',
+                title: 'Chicken Barley Khichdi',
+                tags: ['dinner', 'gut-health', 'comfort'],
+                kcal: 500,
+                desc: 'One-Pot (Good for Digestion)',
+                code: 'Indian Recipe (Code 2-19)',
+                ingredients: ["1 Cup Barley (Soaked 2 hrs)", "500g Chicken Mince", "1 Cup Veggies", "3 Cups Water", "1 tbsp Ghee, Spices"],
+                steps: ["Mix Chicken, Veggies, Ghee, Spices in glass bowl. Microwave 3 mins.", "Add Soaked Barley and Water.", "Run Code 2-19.", "One-pot meal. No separate eggs needed."],
+                icon: 'soup_kitchen',
+                color: 'orange'
+            },
+            {
+                id: 'pulao',
+                title: 'Brown Rice Pulao',
+                tags: ['dinner', 'comfort'],
+                kcal: 520,
+                desc: 'Chicken + Rice One-Pot',
+                code: 'Indian Recipe (Code 9-6)',
+                ingredients: ["500g Chicken", "1.5 Cups Brown Rice (Soaked 2 hrs)", "3 Cups Water", "1 Onion, Spices"],
+                steps: ["Mix Onion, Chicken, Spices. Microwave 3 mins.", "Add Soaked Rice and Water.", "Run Code 9-6.", "Let stand for 5 mins before serving."],
+                icon: 'rice_bowl',
+                color: 'amber'
+            },
+            {
+                id: 'sandwich',
+                title: 'Tandoori Sandwich',
+                tags: ['dinner', 'travel', 'no-mess'],
+                kcal: 520,
+                desc: '250g Chicken + Bread',
+                code: 'Chicken Tikka (Code 8-9)',
+                ingredients: ["750g Chicken Breast (Chunks)", "Marinade: Curd + Ginger/Garlic + Chili Powder", "Whole Wheat Bread"],
+                steps: ["Marinate chicken chunks for 20 mins.", "Place on Crusty Plate (High Rack).", "Run Code 8-9.", "Store dry in fridge.", "Assemble sandwich cold or warm."],
+                icon: 'bakery_dining',
+                color: 'purple'
+            },
+            {
+                id: 'coffee',
+                title: 'Black Coffee',
+                tags: ['snack', 'morning'],
+                kcal: 5,
+                desc: 'Pre-Workout Fuel',
+                code: 'N/A',
+                ingredients: ["Coffee Powder", "Hot Water"],
+                steps: ["Mix and drink 45 mins after Thyroid meds."],
+                icon: 'coffee',
+                color: 'gray'
+            },
+            {
+                id: 'whey',
+                title: 'Whey Protein',
+                tags: ['snack', 'post-workout'],
+                kcal: 120,
+                desc: '1 Scoop',
+                code: 'N/A',
+                ingredients: ["1 Scoop Whey", "300ml Water"],
+                steps: ["Shake well. Drink immediately after gym."],
+                icon: 'fitness_center',
+                color: 'gray'
+            },
+            {
+                id: 'curd',
+                title: 'Homemade Curd',
+                tags: ['snack', 'gut-health'],
+                kcal: 90,
+                desc: '150g Bowl',
+                code: 'Fermentation (Code 3-2)',
+                ingredients: ["1L Milk", "1 tsp Curd Starter"],
+                steps: ["Boil milk, cool to lukewarm.", "Add starter.", "Use Fermentation Mode (3-2) or keep in warm place overnight."],
+                icon: 'science',
+                color: 'gray'
+            }
         ];
 
-        let focus = "Rest & Prep";
-        let sub = "Batch Cooking Day";
-        let wKey = "rest";
+        const workouts = {
+            push: { title: "PUSH DAY (Mon/Thu)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
+            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Seated Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
+            legs: { title: "LEG DAY (Wed/Sat)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
+            rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
+        };
 
-        if (day === 1 || day === 4) {
-          focus = "Push Day";
-          sub = "Chest & Shoulders";
-          wKey = "push";
-        } else if (day === 2 || day === 5) {
-          focus = "Pull Day";
-          sub = "Back & Posture";
-          wKey = "pull";
-        } else if (day === 3 || day === 6) {
-          focus = "Leg Day";
-          sub = "Metabolic Engine";
-          wKey = "legs";
+        const shopping = {
+            monthly: ["2kg Rolled Oats", "2kg Barley (Jau)", "2kg Brown Rice", "1kg Whey Protein", "Fish Oil (Triple Strength)", "Magnesium Glycinate", "Silicone Muffin Tray"],
+            weekly: ["2kg Chicken Mince", "1kg Chicken Breast", "30 Eggs (1 Tray)", "7 Liters Milk (Curd)", "3 Bottle Gourds", "Ginger/Garlic Paste", "Whole Wheat Bread"]
+        };
+
+        const checklistItems = [
+            "07:00 - Eltroxin (Wait 45m)",
+            "Morning - Black Coffee",
+            "Breakfast - Escitalopram/Lamotrigine",
+            "Lunch - Fish Oil/B12/Multi",
+            "Dinner - Rosave F/Febustat",
+            "Night - Magnesium",
+            "Workout - 30m Weights + 30m Walk",
+            "Water - 3.5 Liters"
+        ];
+
+        // --- APP LOGIC ---
+
+        function init() {
+            renderDate();
+            renderChecklist();
+            renderShopping();
+            determineContext();
+            renderHeatmap();
+            filterRecipes('all');
         }
 
-        document.getElementById("dash-focus").innerText = focus;
-        document.getElementById("dash-sub").innerText = sub;
-        setWorkout(wKey);
-      }
-
-      // Checklist Logic
-      const checklistItems = [
-        "07:00 - Eltroxin (Wait 45m)",
-        "Morning - Black Coffee",
-        "Breakfast - Escitalopram/Lamotrigine",
-        "Lunch - Fish Oil/B12/Multi",
-        "Dinner - Rosave F/Febustat",
-        "Night - Magnesium",
-        "Workout - 30m Weights + 30m Walk",
-        "Water - 3.5 Liters",
-      ];
-
-      function renderChecklist() {
-        const container = document.getElementById("checklist-container");
-        const todayKey = new Date().toISOString().split("T")[0];
-        const saved =
-          JSON.parse(localStorage.getItem(`checklist_${todayKey}`)) || {};
-
-        container.innerHTML = checklistItems
-          .map(
-            (item, idx) => `
-                <label class="flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                  saved[idx] ? "bg-green-50" : "hover:bg-gray-50"
-                } cursor-pointer">
-                    <input type="checkbox" ${
-                      saved[idx] ? "checked" : ""
-                    } onchange="toggleCheck(${idx}, this.checked)" class="w-5 h-5 accent-[#006492]">
-                    <span class="text-sm font-medium ${
-                      saved[idx]
-                        ? "text-gray-400 line-through"
-                        : "text-[#191c1e]"
-                    }">${item}</span>
-                </label>
-            `
-          )
-          .join("");
-
-        // Check if all done
-        const allDone = checklistItems.every((_, i) => saved[i]);
-        const btn = document.getElementById("btn-finish");
-        if (allDone) {
-          btn.innerText = "Mission Accomplished";
-          btn.className =
-            "mt-4 w-full py-3 rounded-full font-bold bg-[#22c55e] text-white shadow-lg";
+        function nav(viewId) {
+            document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('active', 'bg-[#cae6ff]', 'text-[#001e30]'); el.classList.add('text-[#43474e]'); });
+            const dBtn = document.getElementById(`d-nav-${viewId}`);
+            if(dBtn) { dBtn.classList.add('active', 'bg-[#cae6ff]', 'text-[#001e30]'); dBtn.classList.remove('text-[#43474e]'); }
+            document.querySelectorAll('.mob-nav').forEach(el => el.classList.remove('text-[#006492]', 'font-bold'));
+            const mBtn = document.getElementById(`m-nav-${viewId}`);
+            if(mBtn) mBtn.classList.add('text-[#006492]', 'font-bold');
         }
-      }
 
-      function toggleCheck(idx, status) {
-        const todayKey = new Date().toISOString().split("T")[0];
-        const saved =
-          JSON.parse(localStorage.getItem(`checklist_${todayKey}`)) || {};
-        saved[idx] = status;
-        localStorage.setItem(`checklist_${todayKey}`, JSON.stringify(saved));
-        renderChecklist();
-        if (status)
-          confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
-      }
+        function determineContext() {
+            const day = new Date().getDay();
+            let focus = "Rest & Prep", sub = "Batch Cooking Day", wKey = "rest";
+            if(day === 1 || day === 4) { focus = "Push Day"; sub = "Chest & Shoulders"; wKey = "push"; }
+            else if(day === 2 || day === 5) { focus = "Pull Day"; sub = "Back & Posture"; wKey = "pull"; }
+            else if(day === 3 || day === 6) { focus = "Leg Day"; sub = "Metabolic Engine"; wKey = "legs"; }
+            document.getElementById('dash-focus').innerText = focus;
+            document.getElementById('dash-sub').innerText = sub;
+            setWorkout(wKey);
+        }
 
-      function finishDay() {
-        const todayKey = new Date().toISOString().split("T")[0];
-        const history = JSON.parse(localStorage.getItem("history")) || {};
-        history[todayKey] = "success";
-        localStorage.setItem("history", JSON.stringify(history));
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            const todayKey = new Date().toISOString().split('T')[0];
+            const saved = JSON.parse(localStorage.getItem(`checklist_${todayKey}`)) || {};
+            container.innerHTML = checklistItems.map((item, idx) => `
+                <label class="flex items-center gap-3 p-3 rounded-xl transition-colors ${saved[idx] ? 'bg-green-50' : 'hover:bg-gray-50'} cursor-pointer">
+                    <input type="checkbox" ${saved[idx] ? 'checked' : ''} onchange="toggleCheck(${idx}, this.checked)" class="w-5 h-5 accent-[#006492]">
+                    <span class="text-sm font-medium ${saved[idx] ? 'text-gray-400 line-through' : 'text-[#191c1e]'}">${item}</span>
+                </label>`).join('');
+            if(checklistItems.every((_, i) => saved[i])) {
+                const btn = document.getElementById('btn-finish');
+                btn.innerText = "Mission Accomplished";
+                btn.className = "mt-4 w-full py-3 rounded-full font-bold bg-[#22c55e] text-white shadow-lg";
+                btn.disabled = false;
+            }
+        }
 
-        confetti({ particleCount: 150, spread: 100 });
-        renderHeatmap();
+        function toggleCheck(idx, status) {
+            const todayKey = new Date().toISOString().split('T')[0];
+            const saved = JSON.parse(localStorage.getItem(`checklist_${todayKey}`)) || {};
+            saved[idx] = status;
+            localStorage.setItem(`checklist_${todayKey}`, JSON.stringify(saved));
+            renderChecklist();
+            if(status) confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
+        }
 
-        // Lock button
-        const btn = document.getElementById("btn-finish");
-        btn.disabled = true;
-        btn.innerText = "Saved to History";
-      }
+        function finishDay() {
+            const todayKey = new Date().toISOString().split('T')[0];
+            const history = JSON.parse(localStorage.getItem('history')) || {};
+            history[todayKey] = 'success';
+            localStorage.setItem('history', JSON.stringify(history));
+            confetti({ particleCount: 150, spread: 100 });
+            document.body.classList.add('day-complete');
+            document.getElementById('status-card').classList.add('bg-green-700');
+            document.getElementById('dash-icon').innerText = 'verified';
+            renderHeatmap();
+            const btn = document.getElementById('btn-finish');
+            btn.disabled = true; btn.innerText = "Saved to History";
+        }
 
-      // Recipe Modal
-      function openRecipe(key) {
-        const r = recipes[key];
-        document.getElementById("modal-title").innerText = r.title;
-        document.getElementById("modal-code").innerText = r.code;
-        document.getElementById("modal-ingredients").innerHTML = r.ingredients
-          .map(
-            (i) =>
-              `<li class="flex gap-2"><span class="material-symbols-rounded text-xs mt-1">circle</span>${i}</li>`
-          )
-          .join("");
-        document.getElementById("modal-steps").innerHTML = r.steps
-          .map((s) => `<li>${s}</li>`)
-          .join("");
+        function filterRecipes(filterTag) {
+            const container = document.getElementById('recipe-grid');
+            container.innerHTML = '';
+            
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                if(c.textContent.toLowerCase().includes(filterTag.replace('-',' '))) c.classList.add('active');
+                else c.classList.remove('active');
+                if(filterTag === 'all' && c.innerText.includes('All')) c.classList.add('active');
+            });
 
-        const dialog = document.getElementById("recipe-modal");
-        dialog.classList.remove("hidden");
-        dialog.showModal();
-      }
+            const filtered = filterTag === 'all' ? recipeDB : recipeDB.filter(r => r.tags.includes(filterTag));
 
-      function closeModal() {
-        const dialog = document.getElementById("recipe-modal");
-        dialog.close();
-        dialog.classList.add("hidden");
-      }
-
-      // Workout Display
-      function setWorkout(key) {
-        const data = workouts[key];
-        const html = data.exercises
-          .map(
-            (ex) => `
-                <div class="flex justify-between items-center py-3 border-b border-[#e1e3e5] last:border-0">
-                    <span class="font-medium text-[#191c1e]">${ex.name}</span>
-                    <span class="text-xs font-bold bg-[#e1e3e5] px-2 py-1 rounded text-[#43474e]">${ex.sets}</span>
-                </div>
-            `
-          )
-          .join("");
-
-        document.getElementById("workout-display").innerHTML = `
-                <h3 class="text-xl font-bold mb-4 text-[#006492]">${
-                  data.title
-                }</h3>
-                <div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">
-                    ${html}
-                </div>
-                ${
-                  key !== "rest"
-                    ? `
-                <div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start">
-                    <span class="material-symbols-rounded text-red-600">directions_run</span>
-                    <div>
-                        <p class="text-sm font-bold text-red-900">Mandatory Cardio</p>
-                        <p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p>
+            filtered.forEach(r => {
+                const card = document.createElement('div');
+                card.onclick = () => openRecipe(r.id);
+                card.className = `m3-card p-0 interactive cursor-pointer overflow-hidden group border border-transparent hover:border-${r.color}-200`;
+                card.innerHTML = `
+                    <div class="h-24 bg-${r.color}-50 flex items-center justify-center group-hover:bg-${r.color}-100 transition-colors">
+                        <span class="material-symbols-rounded text-4xl text-${r.color}-800">${r.icon}</span>
                     </div>
-                </div>`
-                    : ""
-                }
-            `;
-
-        // Update Tabs UI
-        ["push", "pull", "legs", "rest"].forEach((k) => {
-          const btn = document.getElementById(`btn-${k}`);
-          if (k === key) {
-            btn.classList.add("bg-white", "text-[#001e30]", "shadow-sm");
-            btn.classList.remove("text-[#43474e]");
-          } else {
-            btn.classList.remove("bg-white", "text-[#001e30]", "shadow-sm");
-            btn.classList.add("text-[#43474e]");
-          }
-        });
-      }
-
-      // Shopping
-      function renderShopping() {
-        document.getElementById("shop-monthly").innerHTML = shopping.monthly
-          .map(
-            (i) =>
-              `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`
-          )
-          .join("");
-        document.getElementById("shop-weekly").innerHTML = shopping.weekly
-          .map(
-            (i) =>
-              `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`
-          )
-          .join("");
-      }
-
-      // Heatmap
-      function renderHeatmap() {
-        const history = JSON.parse(localStorage.getItem("history")) || {};
-        const container = document.getElementById("mini-heatmap");
-        container.innerHTML = "";
-
-        let streak = 0;
-        // Last 14 days
-        for (let i = 13; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          const k = d.toISOString().split("T")[0];
-          const status = history[k] || "future";
-
-          const dot = document.createElement("div");
-          dot.className = `heatmap-dot ${
-            status === "success"
-              ? "success"
-              : k < new Date().toISOString().split("T")[0]
-              ? "missed"
-              : ""
-          }`;
-          container.appendChild(dot);
-
-          if (status === "success") streak++;
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-${r.color}-800">${r.tags[0]}</span>
+                            <span class="text-xs font-mono text-gray-500">${r.kcal} kcal</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-[#191c1e] leading-tight">${r.title}</h3>
+                        <p class="text-sm text-[#43474e] mt-1">${r.desc}</p>
+                        ${r.tags.includes('gut-health') ? `<p class="text-xs text-green-700 mt-2 font-bold flex items-center gap-1"><span class="material-symbols-rounded text-sm">spa</span> Gut Friendly</p>` : ''}
+                        ${r.tags.includes('travel') ? `<p class="text-xs text-purple-700 mt-2 font-bold flex items-center gap-1"><span class="material-symbols-rounded text-sm">flight</span> Travel Safe</p>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
-        document.getElementById(
-          "streak-badge"
-        ).innerText = `${streak} Days Logged`;
-      }
 
-      function renderDate() {
-        const d = new Date();
-        document.getElementById("mobile-date").innerText = d.toLocaleDateString(
-          "en-US",
-          { weekday: "long", month: "short", day: "numeric" }
-        );
-      }
+        function openRecipe(id) {
+            const r = recipeDB.find(x => x.id === id);
+            document.getElementById('modal-title').innerText = r.title;
+            document.getElementById('modal-code').innerText = r.code;
+            document.getElementById('modal-ingredients').innerHTML = r.ingredients.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-xs mt-1">circle</span>${i}</li>`).join('');
+            document.getElementById('modal-steps').innerHTML = r.steps.map(s => `<li>${s}</li>`).join('');
+            const dialog = document.getElementById('recipe-modal');
+            dialog.classList.remove('hidden'); dialog.showModal();
+        }
 
-      // Run
-      init();
+        function closeModal() { const dialog = document.getElementById('recipe-modal'); dialog.close(); dialog.classList.add('hidden'); }
+
+        function setWorkout(key) {
+            const data = workouts[key];
+            const html = data.exercises.map(ex => `<div class="flex justify-between items-center py-3 border-b border-[#e1e3e5] last:border-0"><span class="font-medium text-[#191c1e]">${ex.name}</span><span class="text-xs font-bold bg-[#e1e3e5] px-2 py-1 rounded text-[#43474e]">${ex.sets}</span></div>`).join('');
+            document.getElementById('workout-display').innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
+            ['push', 'pull', 'legs', 'rest'].forEach(k => { const btn = document.getElementById(`btn-${k}`); if(k===key) { btn.classList.add('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.remove('text-[#43474e]'); } else { btn.classList.remove('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.add('text-[#43474e]'); }});
+        }
+
+        function renderShopping() {
+            document.getElementById('shop-monthly').innerHTML = shopping.monthly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+            document.getElementById('shop-weekly').innerHTML = shopping.weekly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+        }
+
+        function renderHeatmap() {
+            const history = JSON.parse(localStorage.getItem('history')) || {};
+            const container = document.getElementById('mini-heatmap');
+            container.innerHTML = '';
+            
+            let streak = 0;
+            for (let i = 13; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const k = d.toISOString().split('T')[0];
+                const status = history[k] || 'future';
+                
+                const dot = document.createElement('div');
+                dot.className = `heatmap-dot ${status === 'success' ? 'success' : (k < new Date().toISOString().split('T')[0] ? 'missed' : '')}`;
+                container.appendChild(dot);
+                
+                if(status === 'success') streak++;
+            }
+            document.getElementById('streak-badge').innerText = `${streak} Days Logged`;
+            
+            const todayKey = new Date().toISOString().split('T')[0];
+            if(history[todayKey] === 'success') {
+                document.body.classList.add('day-complete');
+                document.getElementById('status-card').classList.add('bg-green-700');
+                document.getElementById('dash-icon').innerText = 'verified';
+                const btn = document.getElementById('btn-finish');
+                btn.disabled = true; btn.innerText = "Saved to History";
+            }
+        }
+
+        function renderDate() {
+            const d = new Date();
+            document.getElementById('mobile-date').innerText = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        }
+
+        init();
+
     </script>
-  </body>
+</body>
 </html>
