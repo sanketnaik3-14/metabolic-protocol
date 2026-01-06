@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanket's Protocol | v10</title>
+    <title>Sanket's Protocol | v10.1</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -146,9 +146,6 @@
         <button onclick="nav('sos')" id="d-nav-sos" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
             <span class="material-symbols-rounded text-2xl">emergency</span> SOS / Guide
         </button>
-        <button onclick="nav('shopping')" id="d-nav-shopping" class="nav-item flex items-center gap-4 px-6 py-4 rounded-full font-medium transition-colors text-[#43474e]">
-            <span class="material-symbols-rounded text-2xl">shopping_cart</span> Shopping List
-        </button>
     </nav>
 
     <!-- MOBILE MAIN CONTENT -->
@@ -262,6 +259,10 @@
 
                 <div class="m3-card p-6 border-t-4 border-[#006492]">
                     <div id="workout-display"></div>
+                    <!-- REST TIMER NOTE -->
+                    <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-gray-500">
+                        <span class="font-bold text-[#006492]">Rest Times:</span> 90-120s for Compounds (Chest/Lat/Legs) • 60s for Isolation (Arms/Calves/Abs).
+                    </div>
                 </div>
             </section>
 
@@ -391,7 +392,6 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </main>
 
@@ -526,7 +526,7 @@
 
         const workouts = {
             push: { title: "PUSH DAY (Mon/Thu)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
-            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Seated Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
+            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Standing Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
             legs: { title: "LEG DAY (Wed/Sat)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
             rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
         };
@@ -548,6 +548,11 @@
         ];
 
         // --- APP LOGIC ---
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
 
         function init() {
             renderDate();
@@ -576,13 +581,17 @@
             if(day === 1 || day === 4) { focus = "Push Day"; sub = "Chest & Shoulders"; wKey = "push"; }
             else if(day === 2 || day === 5) { focus = "Pull Day"; sub = "Back & Posture"; wKey = "pull"; }
             else if(day === 3 || day === 6) { focus = "Leg Day"; sub = "Metabolic Engine"; wKey = "legs"; }
-            document.getElementById('dash-focus').innerText = focus;
-            document.getElementById('dash-sub').innerText = sub;
+            
+            const focusEl = document.getElementById('dash-focus');
+            const subEl = document.getElementById('dash-sub');
+            if(focusEl) focusEl.innerText = focus;
+            if(subEl) subEl.innerText = sub;
             setWorkout(wKey);
         }
 
         function renderChecklist() {
             const container = document.getElementById('checklist-container');
+            if(!container) return;
             const todayKey = new Date().toISOString().split('T')[0];
             const saved = JSON.parse(localStorage.getItem(`checklist_${todayKey}`)) || {};
             container.innerHTML = checklistItems.map((item, idx) => `
@@ -592,9 +601,11 @@
                 </label>`).join('');
             if(checklistItems.every((_, i) => saved[i])) {
                 const btn = document.getElementById('btn-finish');
-                btn.innerText = "Mission Accomplished";
-                btn.className = "mt-4 w-full py-3 rounded-full font-bold bg-[#22c55e] text-white shadow-lg";
-                btn.disabled = false;
+                if(btn) {
+                    btn.innerText = "Mission Accomplished";
+                    btn.className = "mt-4 w-full py-3 rounded-full font-bold bg-[#22c55e] text-white shadow-lg";
+                    btn.disabled = false;
+                }
             }
         }
 
@@ -614,15 +625,21 @@
             localStorage.setItem('history', JSON.stringify(history));
             confetti({ particleCount: 150, spread: 100 });
             document.body.classList.add('day-complete');
-            document.getElementById('status-card').classList.add('bg-green-700');
-            document.getElementById('dash-icon').innerText = 'verified';
+            const statusCard = document.getElementById('status-card');
+            const dashIcon = document.getElementById('dash-icon');
+            if(statusCard) statusCard.classList.add('bg-green-700');
+            if(dashIcon) dashIcon.innerText = 'verified';
             renderHeatmap();
             const btn = document.getElementById('btn-finish');
-            btn.disabled = true; btn.innerText = "Saved to History";
+            if(btn) {
+                btn.disabled = true; 
+                btn.innerText = "Saved to History";
+            }
         }
 
         function filterRecipes(filterTag) {
             const container = document.getElementById('recipe-grid');
+            if(!container) return;
             container.innerHTML = '';
             
             document.querySelectorAll('.filter-chip').forEach(c => {
@@ -658,34 +675,60 @@
 
         function openRecipe(id) {
             const r = recipeDB.find(x => x.id === id);
-            document.getElementById('modal-title').innerText = r.title;
-            document.getElementById('modal-code').innerText = r.code;
-            document.getElementById('modal-ingredients').innerHTML = r.ingredients.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-xs mt-1">circle</span>${i}</li>`).join('');
-            document.getElementById('modal-steps').innerHTML = r.steps.map(s => `<li>${s}</li>`).join('');
+            const titleEl = document.getElementById('modal-title');
+            const codeEl = document.getElementById('modal-code');
+            const ingEl = document.getElementById('modal-ingredients');
+            const stepEl = document.getElementById('modal-steps');
+            
+            if(titleEl) titleEl.innerText = r.title;
+            if(codeEl) codeEl.innerText = r.code;
+            if(ingEl) ingEl.innerHTML = r.ingredients.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-xs mt-1">circle</span>${i}</li>`).join('');
+            if(stepEl) stepEl.innerHTML = r.steps.map(s => `<li>${s}</li>`).join('');
+            
             const dialog = document.getElementById('recipe-modal');
-            dialog.classList.remove('hidden'); dialog.showModal();
+            if(dialog) {
+                dialog.classList.remove('hidden'); 
+                dialog.showModal();
+            }
         }
 
-        function closeModal() { const dialog = document.getElementById('recipe-modal'); dialog.close(); dialog.classList.add('hidden'); }
+        function closeModal() { 
+            const dialog = document.getElementById('recipe-modal'); 
+            if(dialog) {
+                dialog.close(); 
+                dialog.classList.add('hidden'); 
+            }
+        }
 
         function setWorkout(key) {
             const data = workouts[key];
+            const display = document.getElementById('workout-display');
+            if(!display) return;
+            
             const html = data.exercises.map(ex => `<div class="flex justify-between items-center py-3 border-b border-[#e1e3e5] last:border-0"><span class="font-medium text-[#191c1e]">${ex.name}</span><span class="text-xs font-bold bg-[#e1e3e5] px-2 py-1 rounded text-[#43474e]">${ex.sets}</span></div>`).join('');
-            document.getElementById('workout-display').innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
-            ['push', 'pull', 'legs', 'rest'].forEach(k => { const btn = document.getElementById(`btn-${k}`); if(k===key) { btn.classList.add('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.remove('text-[#43474e]'); } else { btn.classList.remove('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.add('text-[#43474e]'); }});
+            display.innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
+            ['push', 'pull', 'legs', 'rest'].forEach(k => { 
+                const btn = document.getElementById(`btn-${k}`); 
+                if(btn) {
+                    if(k===key) { btn.classList.add('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.remove('text-[#43474e]'); } 
+                    else { btn.classList.remove('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.add('text-[#43474e]'); }
+                }
+            });
         }
 
         function renderShopping() {
-            // Null check
             const m = document.getElementById('shop-monthly');
             const w = document.getElementById('shop-weekly');
-            if (m) m.innerHTML = shopping.monthly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
-            if (w) w.innerHTML = shopping.weekly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+            if(m && w) {
+                m.innerHTML = shopping.monthly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+                w.innerHTML = shopping.weekly.map(i => `<li class="flex gap-2"><span class="material-symbols-rounded text-sm">check_box_outline_blank</span>${i}</li>`).join('');
+            }
         }
 
         function renderHeatmap() {
             const history = JSON.parse(localStorage.getItem('history')) || {};
             const container = document.getElementById('mini-heatmap');
+            if(!container) return;
             container.innerHTML = '';
             
             let streak = 0;
@@ -701,15 +744,22 @@
                 
                 if(status === 'success') streak++;
             }
-            document.getElementById('streak-badge').innerText = `${streak} Days Logged`;
+            
+            const badge = document.getElementById('streak-badge');
+            if(badge) badge.innerText = `${streak} Days Logged`;
             
             const todayKey = new Date().toISOString().split('T')[0];
             if(history[todayKey] === 'success') {
                 document.body.classList.add('day-complete');
-                document.getElementById('status-card').classList.add('bg-green-700');
-                document.getElementById('dash-icon').innerText = 'verified';
+                const statusCard = document.getElementById('status-card');
+                const dashIcon = document.getElementById('dash-icon');
+                if(statusCard) statusCard.classList.add('bg-green-700');
+                if(dashIcon) dashIcon.innerText = 'verified';
                 const btn = document.getElementById('btn-finish');
-                btn.disabled = true; btn.innerText = "Saved to History";
+                if(btn) {
+                    btn.disabled = true; 
+                    btn.innerText = "Saved to History";
+                }
             }
         }
 
@@ -741,16 +791,19 @@
         }
 
         function saveProgress() {
-            const w = parseFloat(document.getElementById('input-weight').value);
-            const ws = parseFloat(document.getElementById('input-waist').value);
+            const wInput = document.getElementById('input-weight');
+            const wsInput = document.getElementById('input-waist');
+            const w = parseFloat(wInput.value);
+            const ws = parseFloat(wsInput.value);
+            
             if (!w || !ws) return alert("Enter values");
             const logs = JSON.parse(localStorage.getItem('progress_logs')) || [];
             const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
             logs.push({ date, weight: w, waist: ws });
             localStorage.setItem('progress_logs', JSON.stringify(logs));
             
-            document.getElementById('input-weight').value = '';
-            document.getElementById('input-waist').value = '';
+            wInput.value = '';
+            wsInput.value = '';
             if(chartInstance) chartInstance.destroy();
             initChart();
             alert("Log saved!");
@@ -769,11 +822,9 @@
 
         function renderDate() {
             const d = new Date();
-            document.getElementById('mobile-date').innerText = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            const dateEl = document.getElementById('mobile-date');
+            if(dateEl) dateEl.innerText = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
         }
-
-        // Wait for DOM
-        document.addEventListener('DOMContentLoaded', init);
 
     </script>
 </body>
