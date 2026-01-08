@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanket's Protocol | v12</title>
+    <title>Sanket's Protocol | v13</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -255,6 +255,7 @@
                     <button onclick="setWorkout('pull')" id="btn-pull" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PULL<br><span class="font-normal opacity-70">Tue/Fri</span></button>
                     <button onclick="setWorkout('legs')" id="btn-legs" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">LEGS<br><span class="font-normal opacity-70">Wed/Sat</span></button>
                     <button onclick="setWorkout('core')" id="btn-core" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">CORE<br><span class="font-normal opacity-70">Daily</span></button>
+                    <button onclick="setWorkout('warmup')" id="btn-warmup" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">WARMUP<br><span class="font-normal opacity-70">Start/End</span></button>
                     <button onclick="setWorkout('rest')" id="btn-rest" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">REST<br><span class="font-normal opacity-70">Sun</span></button>
                 </div>
 
@@ -553,7 +554,7 @@
                     { name: "Seated Shoulder Press", sets: "3 x 12" }, 
                     { name: "Tricep Pushdowns", sets: "3 x 15" }, 
                     { name: "Plank", sets: "3 x 45s" },
-                    { name: "Static Stretching", sets: "Post-Workout" }
+                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
                 ] 
             },
             pull: { 
@@ -564,7 +565,7 @@
                     { name: "Standing Cable Row", sets: "3 x 12" }, 
                     { name: "Face Pulls", sets: "3 x 15" }, 
                     { name: "Bicep Curls", sets: "3 x 12" },
-                    { name: "Static Stretching", sets: "Post-Workout" }
+                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
                 ] 
             },
             legs: { 
@@ -575,10 +576,21 @@
                     { name: "Leg Extension", sets: "3 x 15" }, 
                     { name: "Hamstring Curl", sets: "3 x 15" }, 
                     { name: "Calf Raises", sets: "3 x 20" },
-                    { name: "Static Stretching", sets: "Post-Workout" }
+                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
                 ] 
             },
             core: { title: "CORE FINISHER (Optional Daily)", exercises: [{ name: "Plank", sets: "3 x 45s" }, { name: "Cable Woodchoppers", sets: "3 x 12" }, { name: "Dead Bug", sets: "3 x 15" }] },
+            warmup: { 
+                title: "WARMUP & COOL-DOWN (Daily Guide)", 
+                exercises: [
+                    { name: "START: Arm Circles", sets: "20 Reps" },
+                    { name: "START: Torso Twists", sets: "20 Reps" },
+                    { name: "START: Leg Swings", sets: "10/Leg" },
+                    { name: "END: Quad Stretch", sets: "30s Hold" },
+                    { name: "END: Hamstring Stretch", sets: "30s Hold" },
+                    { name: "END: Chest Opener", sets: "30s Hold" }
+                ] 
+            },
             rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
         };
 
@@ -760,7 +772,7 @@
             
             const html = data.exercises.map(ex => `<div class="flex justify-between items-center py-3 border-b border-[#e1e3e5] last:border-0"><span class="font-medium text-[#191c1e]">${ex.name}</span><span class="text-xs font-bold bg-[#e1e3e5] px-2 py-1 rounded text-[#43474e]">${ex.sets}</span></div>`).join('');
             display.innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
-            ['push', 'pull', 'legs', 'rest', 'core'].forEach(k => { 
+            ['push', 'pull', 'legs', 'rest', 'core', 'warmup'].forEach(k => { 
                 const btn = document.getElementById(`btn-${k}`); 
                 if(btn) {
                     if(k===key) { btn.classList.add('bg-white', 'text-[#001e30]', 'shadow-sm'); btn.classList.remove('text-[#43474e]'); } 
