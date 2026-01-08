@@ -545,9 +545,39 @@
         ];
 
         const workouts = {
-            push: { title: "PUSH DAY (Mon/Thu)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
-            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Standing Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
-            legs: { title: "LEG DAY (Wed/Sat)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
+            push: { 
+                title: "PUSH DAY (Mon/Thu)", 
+                exercises: [
+                    { name: "Dynamic Warmup (Arm Circles, Wall Pushes)", sets: "5 mins" },
+                    { name: "Machine Chest Press", sets: "3 x 12" }, 
+                    { name: "Seated Shoulder Press", sets: "3 x 12" }, 
+                    { name: "Tricep Pushdowns", sets: "3 x 15" }, 
+                    { name: "Plank", sets: "3 x 45s" },
+                    { name: "Static Stretching", sets: "Post-Workout" }
+                ] 
+            },
+            pull: { 
+                title: "PULL DAY (Tue/Fri)", 
+                exercises: [
+                    { name: "Dynamic Warmup (Arm Circles, Wall Pushes)", sets: "5 mins" },
+                    { name: "Lat Pulldown (Wide)", sets: "3 x 12" }, 
+                    { name: "Standing Cable Row", sets: "3 x 12" }, 
+                    { name: "Face Pulls", sets: "3 x 15" }, 
+                    { name: "Bicep Curls", sets: "3 x 12" },
+                    { name: "Static Stretching", sets: "Post-Workout" }
+                ] 
+            },
+            legs: { 
+                title: "LEG DAY (Wed/Sat)", 
+                exercises: [
+                    { name: "Dynamic Warmup (Bodyweight Squats)", sets: "5 mins" },
+                    { name: "Leg Press", sets: "3 x 15" }, 
+                    { name: "Leg Extension", sets: "3 x 15" }, 
+                    { name: "Hamstring Curl", sets: "3 x 15" }, 
+                    { name: "Calf Raises", sets: "3 x 20" },
+                    { name: "Static Stretching", sets: "Post-Workout" }
+                ] 
+            },
             core: { title: "CORE FINISHER (Optional Daily)", exercises: [{ name: "Plank", sets: "3 x 45s" }, { name: "Cable Woodchoppers", sets: "3 x 12" }, { name: "Dead Bug", sets: "3 x 15" }] },
             rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
         };
