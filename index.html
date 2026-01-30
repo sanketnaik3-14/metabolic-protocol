@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanket's Protocol | v12.1</title>
+    <title>Sanket's Protocol | v18</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -251,11 +251,11 @@
 
                 <!-- Workout Schedule Tabs -->
                 <div class="flex p-1 bg-[#e0e2e5] rounded-xl overflow-x-auto">
+                    <button onclick="setWorkout('warmup')" id="btn-warmup" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">WARMUP<br><span class="font-normal opacity-70">Start/End</span></button>
                     <button onclick="setWorkout('push')" id="btn-push" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PUSH<br><span class="font-normal opacity-70">Mon/Thu</span></button>
                     <button onclick="setWorkout('pull')" id="btn-pull" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PULL<br><span class="font-normal opacity-70">Tue/Fri</span></button>
                     <button onclick="setWorkout('legs')" id="btn-legs" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">LEGS<br><span class="font-normal opacity-70">Wed/Sat</span></button>
                     <button onclick="setWorkout('core')" id="btn-core" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">CORE<br><span class="font-normal opacity-70">Daily</span></button>
-                    <button onclick="setWorkout('warmup')" id="btn-warmup" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">WARMUP<br><span class="font-normal opacity-70">Start/End</span></button>
                     <button onclick="setWorkout('rest')" id="btn-rest" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">REST<br><span class="font-normal opacity-70">Sun</span></button>
                 </div>
 
@@ -430,14 +430,14 @@
         const recipeDB = [
             {
                 id: 'no-waste-scramble',
-                title: 'No-Waste Egg Scramble',
+                title: 'Classic Scramble',
                 tags: ['breakfast', 'budget', 'no-mess'],
-                kcal: 350,
-                desc: '3 Whole Eggs + Soya',
+                kcal: 300,
+                desc: '4 Whole Eggs + Veggies',
                 code: 'Stovetop / Pan OR Microwave (Mug)',
-                ingredients: ["3 Whole Eggs", "30g Soya Granules (Soaked)", "Onion/Tomato", "1 Slice Toast"],
+                ingredients: ["4 Whole Eggs", "Onion/Tomato/Chili", "Salt & Pepper", "1 tsp Ghee"],
                 steps: [
-                    "Method A (Pan): Sauté soaked soya with veggies. Crack eggs over. Scramble.",
+                    "Method A (Pan): Whisk eggs with spices. Sauté veggies. Scramble until cooked.",
                     "Method B (Mug): Mix all in mug. Microwave High for 90-120 secs.",
                     "Enjoy with toast."
                 ],
@@ -475,7 +475,7 @@
                 kcal: 500,
                 desc: 'One-Pot (Good for Digestion)',
                 code: 'Indian Recipe (Code 2-19) OR Stovetop',
-                ingredients: ["1 Cup Barley (Soaked 2 hrs)", "500g Chicken Mince", "1 Cup Veggies", "1 tbsp Ghee, Spices", "Water Ratio: 1 Barley to 3 Water (Cooker) or 2.5 Water (Oven)"],
+                ingredients: ["1 Cup Barley (Soaked 2 hrs)", "500g Chicken Mince", "1 Cup Veggies", "3 Cups Water", "1 tbsp Ghee, Spices"],
                 steps: [
                     "Method A (Samsung): Mix Chicken, Veggies, Ghee in glass bowl. Micro 3 mins. Add Barley/Water. Run Code 2-19.",
                     "Method B (Pressure Cooker): Sauté chicken/spices. Add Barley/Water. Cook for 4 whistles."
@@ -521,7 +521,7 @@
             },
             {
                 id: 'whey',
-                title: 'Whey Protein',
+                title: 'Whey Protein (Concentrate)',
                 tags: ['snack', 'post-workout'],
                 kcal: 120,
                 desc: '1 Scoop',
@@ -532,65 +532,48 @@
                 color: 'gray'
             },
             {
-                id: 'curd',
-                title: 'Homemade Curd',
-                tags: ['snack', 'gut-health'],
-                kcal: 90,
-                desc: '150g Bowl',
-                code: 'Fermentation (Code 3-2)',
-                ingredients: ["1L Milk", "1 tsp Curd Starter"],
-                steps: ["Boil milk, cool to lukewarm.", "Add starter.", "Use Fermentation Mode (3-2) or keep in warm place overnight."],
+                id: 'soy_blend',
+                title: 'Soy + Whey Blend',
+                tags: ['snack', 'breakfast'],
+                kcal: 120,
+                desc: '1 Scoop',
+                code: 'N/A',
+                ingredients: ["1 Scoop Blend", "300ml Water"],
+                steps: ["Drink with Breakfast or Mid-Morning. Slower digestion keeps you full."],
                 icon: 'science',
                 color: 'gray'
+            },
+            {
+                id: 'yogurt',
+                title: 'Greek Yogurt',
+                tags: ['snack', 'treat'],
+                kcal: 100,
+                desc: 'Small Bowl',
+                code: 'Fridge',
+                ingredients: ["Greek Yogurt", "Berries (Optional)"],
+                steps: ["Eat as a healthy dessert or snack when craving sweets."],
+                icon: 'icecream',
+                color: 'pink'
             }
         ];
 
         const workouts = {
-            push: { 
-                title: "PUSH DAY (Mon/Thu)", 
-                exercises: [
-                    { name: "Dynamic Warmup (Arm Circles, Wall Pushes)", sets: "5 mins" },
-                    { name: "Machine Chest Press", sets: "3 x 12" }, 
-                    { name: "Seated Shoulder Press", sets: "3 x 12" }, 
-                    { name: "Tricep Pushdowns", sets: "3 x 15" }, 
-                    { name: "Plank", sets: "3 x 45s" },
-                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
-                ] 
-            },
-            pull: { 
-                title: "PULL DAY (Tue/Fri)", 
-                exercises: [
-                    { name: "Dynamic Warmup (Arm Circles, Wall Pushes)", sets: "5 mins" },
-                    { name: "Lat Pulldown (Wide)", sets: "3 x 12" }, 
-                    { name: "Standing Cable Row", sets: "3 x 12" }, 
-                    { name: "Face Pulls", sets: "3 x 15" }, 
-                    { name: "Bicep Curls", sets: "3 x 12" },
-                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
-                ] 
-            },
-            legs: { 
-                title: "LEG DAY (Wed/Sat)", 
-                exercises: [
-                    { name: "Dynamic Warmup (Bodyweight Squats)", sets: "5 mins" },
-                    { name: "Leg Press", sets: "3 x 15" }, 
-                    { name: "Leg Extension", sets: "3 x 15" }, 
-                    { name: "Hamstring Curl", sets: "3 x 15" }, 
-                    { name: "Calf Raises", sets: "3 x 20" },
-                    { name: "Static Stretching (Hold 30s each)", sets: "Post-Workout" }
-                ] 
-            },
-            core: { title: "CORE FINISHER (Optional Daily)", exercises: [{ name: "Plank", sets: "3 x 45s" }, { name: "Cable Woodchoppers", sets: "3 x 12" }, { name: "Dead Bug", sets: "3 x 15" }] },
             warmup: { 
-                title: "WARMUP & COOL-DOWN (Daily Guide)", 
+                title: "WARMUP & COOL-DOWN", 
                 exercises: [
                     { name: "START: Arm Circles", sets: "20 Reps" },
                     { name: "START: Torso Twists", sets: "20 Reps" },
                     { name: "START: Leg Swings", sets: "10/Leg" },
+                    { name: "START: Bodyweight Squats", sets: "15 Reps" },
                     { name: "END: Quad Stretch", sets: "30s Hold" },
                     { name: "END: Hamstring Stretch", sets: "30s Hold" },
                     { name: "END: Chest Opener", sets: "30s Hold" }
                 ] 
             },
+            push: { title: "PUSH DAY (Mon/Thu)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
+            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Standing Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
+            legs: { title: "LEG DAY (Wed/Sat)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
+            core: { title: "CORE FINISHER (Optional Daily)", exercises: [{ name: "Plank", sets: "3 x 45s" }, { name: "Cable Woodchoppers", sets: "3 x 12" }, { name: "Dead Bug", sets: "3 x 15" }] },
             rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
         };
 
@@ -771,7 +754,7 @@
             if(!display) return;
             
             const html = data.exercises.map(ex => `<div class="flex justify-between items-center py-3 border-b border-[#e1e3e5] last:border-0"><span class="font-medium text-[#191c1e]">${ex.name}</span><span class="text-xs font-bold bg-[#e1e3e5] px-2 py-1 rounded text-[#43474e]">${ex.sets}</span></div>`).join('');
-            display.innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
+            display.innerHTML = `<h3 class="text-xl font-bold mb-4 text-[#006492]">${data.title}</h3><div class="bg-white rounded-xl p-4 border border-[#e1e3e5]">${html}</div>${key!=='rest'&&key!=='warmup'?`<div class="mt-4 bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 items-start"><span class="material-symbols-rounded text-red-600">directions_run</span><div><p class="text-sm font-bold text-red-900">Mandatory Cardio</p><p class="text-xs text-red-800">30 Mins Incline Walk immediately after weights.<br>Speed: 4.5 | Incline: 10-12</p></div></div>`:''}`;
             ['push', 'pull', 'legs', 'rest', 'core', 'warmup'].forEach(k => { 
                 const btn = document.getElementById(`btn-${k}`); 
                 if(btn) {
