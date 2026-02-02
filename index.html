@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanket's Protocol | v18</title>
+    <title>Sanket's Protocol | v19</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -245,18 +245,18 @@
             <!-- ================= VIEW: WORKOUT ================= -->
             <section id="view-workout" class="space-y-6 hidden animate-enter">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-[#191c1e]">6-Day PPL</h2>
+                    <h2 class="text-2xl font-bold text-[#191c1e]">Rolling PPL (3 On, 1 Off)</h2>
                     <span class="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">Incline Walk Mandatory</span>
                 </div>
 
                 <!-- Workout Schedule Tabs -->
                 <div class="flex p-1 bg-[#e0e2e5] rounded-xl overflow-x-auto">
                     <button onclick="setWorkout('warmup')" id="btn-warmup" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">WARMUP<br><span class="font-normal opacity-70">Start/End</span></button>
-                    <button onclick="setWorkout('push')" id="btn-push" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PUSH<br><span class="font-normal opacity-70">Mon/Thu</span></button>
-                    <button onclick="setWorkout('pull')" id="btn-pull" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PULL<br><span class="font-normal opacity-70">Tue/Fri</span></button>
-                    <button onclick="setWorkout('legs')" id="btn-legs" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">LEGS<br><span class="font-normal opacity-70">Wed/Sat</span></button>
+                    <button onclick="setWorkout('push')" id="btn-push" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PUSH<br><span class="font-normal opacity-70">Block A</span></button>
+                    <button onclick="setWorkout('pull')" id="btn-pull" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">PULL<br><span class="font-normal opacity-70">Block B</span></button>
+                    <button onclick="setWorkout('legs')" id="btn-legs" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">LEGS<br><span class="font-normal opacity-70">Block C</span></button>
                     <button onclick="setWorkout('core')" id="btn-core" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">CORE<br><span class="font-normal opacity-70">Daily</span></button>
-                    <button onclick="setWorkout('rest')" id="btn-rest" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">REST<br><span class="font-normal opacity-70">Sun</span></button>
+                    <button onclick="setWorkout('rest')" id="btn-rest" class="flex-1 min-w-[80px] py-2 text-xs font-bold rounded-lg transition-all text-[#43474e]">ACTIVE REST<br><span class="font-normal opacity-70">Day 4</span></button>
                 </div>
 
                 <div class="m3-card p-6 border-t-4 border-[#006492]">
@@ -478,7 +478,7 @@
                 ingredients: ["1 Cup Barley (Soaked 2 hrs)", "500g Chicken Mince", "1 Cup Veggies", "3 Cups Water", "1 tbsp Ghee, Spices"],
                 steps: [
                     "Method A (Samsung): Mix Chicken, Veggies, Ghee in glass bowl. Micro 3 mins. Add Barley/Water. Run Code 2-19.",
-                    "Method B (Pressure Cooker): Sauté chicken/spices. Add Barley/Water. Cook for 4 whistles."
+                    "Method B (Pressure Cooker): Sauté chicken/spices. Add Barley/Water (3 Cups). Cook for 4 whistles."
                 ],
                 icon: 'soup_kitchen',
                 color: 'orange'
@@ -503,7 +503,7 @@
                 desc: '250g Chicken + Bread',
                 code: 'Chicken Tikka (Code 8-9)',
                 ingredients: ["750g Chicken Breast (Chunks)", "Marinade: Curd + Ginger/Garlic + Chili Powder", "Whole Wheat Bread"],
-                steps: ["Marinate chicken chunks for 20 mins.", "Place on Crusty Plate (High Rack).", "Run Code 8-9.", "Store dry in fridge.", "Assemble sandwich cold or warm."],
+                steps: ["Marinate chicken chunks for 20 mins.", "Place on Crusty Plate (Low Rack).", "Run Code 8-9 (or Convection 200°C for 25 mins).", "Store dry in fridge.", "Assemble sandwich cold or warm."],
                 icon: 'bakery_dining',
                 color: 'purple'
             },
@@ -570,11 +570,11 @@
                     { name: "END: Chest Opener", sets: "30s Hold" }
                 ] 
             },
-            push: { title: "PUSH DAY (Mon/Thu)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
-            pull: { title: "PULL DAY (Tue/Fri)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Standing Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
-            legs: { title: "LEG DAY (Wed/Sat)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
+            push: { title: "PUSH (Block A)", exercises: [{ name: "Machine Chest Press", sets: "3 x 12" }, { name: "Seated Shoulder Press", sets: "3 x 12" }, { name: "Tricep Pushdowns", sets: "3 x 15" }, { name: "Plank", sets: "3 x 45s" }] },
+            pull: { title: "PULL (Block B)", exercises: [{ name: "Lat Pulldown (Wide)", sets: "3 x 12" }, { name: "Standing Cable Row", sets: "3 x 12" }, { name: "Face Pulls", sets: "3 x 15" }, { name: "Bicep Curls", sets: "3 x 12" }] },
+            legs: { title: "LEGS (Block C)", exercises: [{ name: "Leg Press", sets: "3 x 15" }, { name: "Leg Extension", sets: "3 x 15" }, { name: "Hamstring Curl", sets: "3 x 15" }, { name: "Calf Raises", sets: "3 x 20" }] },
             core: { title: "CORE FINISHER (Optional Daily)", exercises: [{ name: "Plank", sets: "3 x 45s" }, { name: "Cable Woodchoppers", sets: "3 x 12" }, { name: "Dead Bug", sets: "3 x 15" }] },
-            rest: { title: "REST DAY (Sunday)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
+            rest: { title: "ACTIVE REST (Day 4/8)", exercises: [{ name: "Active Recovery Walk", sets: "45 mins" }, { name: "Batch Cooking", sets: "Meal Prep" }] }
         };
 
         const shopping = {
@@ -626,6 +626,7 @@
         function determineContext() {
             const day = new Date().getDay();
             let focus = "Rest & Prep", sub = "Batch Cooking Day", wKey = "rest";
+            // Default to day based, but user can override via manual click
             if(day === 1 || day === 4) { focus = "Push Day"; sub = "Chest & Shoulders"; wKey = "push"; }
             else if(day === 2 || day === 5) { focus = "Pull Day"; sub = "Back & Posture"; wKey = "pull"; }
             else if(day === 3 || day === 6) { focus = "Leg Day"; sub = "Metabolic Engine"; wKey = "legs"; }
